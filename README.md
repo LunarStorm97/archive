@@ -42,16 +42,6 @@ node main.mjs -m SM-A236M -r ARO -i 358263681238947
 node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 ```
 
-### 📦 Dependencies
-
-This project uses the following dependencies:
-
-- `axios`: ^1.7.9
-- `chalk`: ^5.4.1
-- `fast-xml-parser`: ^4.5.1
-- `unzip-stream`: ^0.3.4
-- `yargs`: ^17.7.2
-
 ### 📜 License
 
 This project is licensed under [The Unlicense](https://unlicense.org).
