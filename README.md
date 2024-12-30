@@ -48,18 +48,6 @@ node main.mjs -m SM-A236M -r ARO -i 358263681238947
 node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 ```
 
-## 🤖 Dependabot Configuration
-
-This repository uses **Dependabot** to keep dependencies up-to-date. The current configuration is located in `.github/dependabot.yml` and updates npm dependencies on a weekly basis.
-
-## ⚙️ CI/CD with GitHub Actions
-
-The repository includes a **GitHub Actions** workflow for continuous integration and testing. The configuration file is located at `.github/workflows/node.js.yml` and performs the following tasks:
-
-- Install Node.js dependencies.
-- Run tests on multiple Node.js versions (18.x, 20.x, 22.x).
-- Execute the firmware download script.
-
 ## 📦 Dependencies
 
 This project uses the following dependencies:
