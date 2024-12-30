@@ -1,3 +1,4 @@
+
 ## 📱 Samsung Firmware Downloader
 
 This repository contains a script to download firmware for Samsung devices using Node.js.
@@ -28,14 +29,20 @@ This repository contains a script to download firmware for Samsung devices using
 
 ### 🛠️ Usage
 
-To run the script, use the following command, replacing `<model>`, `<region>` and `<imei>` with the corresponding values for your device:
+To run the script, use the following command, replacing `<model>`, `<region>`, and `<imei>` or `<serial>` with the corresponding values for your device:
+
 ```bash
-node main.mjs -m <model> -r <region> -i <imei>
+node main.mjs -m <model> -r <region> -i <imei or serial>
 ```
 
-Example:
+#### Example using IMEI:
 ```bash
 node main.mjs -m SM-A236M -r ARO -i 358263681238947
+```
+
+#### Example using Serial Number (SN):
+```bash
+node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 ```
 
 ### 🤖 Dependabot Configuration
