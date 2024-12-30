@@ -1,15 +1,15 @@
-## Samsung Firmware Downloader
+# Samsung Firmware Downloader
 
 A Node.js script to download firmware for Samsung devices.
 
-### Requirements
+## Requirements
 
 - Node.js version 18.x, 20.x, or 22.x
 - npm (Node Package Manager)
 
 <p><img src="https://github.com/nodejs/Release/blob/main/schedule.svg" alt="LTS Schedule"/></p>
 
-### Installation
+## Installation
 
 1. Clone this repository:
 
@@ -24,7 +24,7 @@ cd samsung-firmware
 npm install
 ```
 
-### Usage
+## Usage
 
 To run the script, use the following command, replacing `<model>`, `<region>`, and `<imei>` or `<serial>` with the corresponding values for your device:
 
