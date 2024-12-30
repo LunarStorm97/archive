@@ -38,6 +38,7 @@ jobs:
       - name: Commit and Push SM Files
         if: matrix.node-version == '22.x'
         run: |
+          rm -rf SM*/AP*
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add SM*
