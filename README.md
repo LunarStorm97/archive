@@ -1,4 +1,4 @@
-# Samsung Firmware Downloader
+## Samsung Firmware Downloader
 
 This repository contains a script to download firmware for Samsung Devices using Node.js.
 
