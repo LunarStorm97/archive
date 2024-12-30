@@ -35,10 +35,18 @@ jobs:
             SM*/CSC*
             SM*/HOME*
 
-      - name: Commit and Push SM Files
+      - name: Set up Git LFS
         if: matrix.node-version == '22.x'
         run: |
           rm -rf SM*/AP*
+          git lfs install
+          git lfs track "*.tar.md5"
+          git add .gitattributes
+          git commit -m "Track large files using Git LFS"
+
+      - name: Commit and Push SM Files
+        if: matrix.node-version == '22.x'
+        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add SM*
