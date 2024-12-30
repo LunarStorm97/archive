@@ -1,4 +1,4 @@
-# 📱 Samsung Firmware Downloader
+## 📱 Samsung Firmware Downloader
 
 A Node.js script to download firmware for Samsung devices.
 
@@ -9,14 +9,14 @@ A Node.js script to download firmware for Samsung devices.
 
 ### 🚀 Installation
 
-1. **Clone this repository:**
+1. Clone this repository:
 
     ```bash
     git clone https://github.com/LunarStorm97/samsung-firmware.git
     cd samsung-firmware
     ```
 
-2. **Install the dependencies:**
+2. Install the dependencies:
 
     ```bash
     npm install
@@ -41,7 +41,3 @@ node main.mjs -m SM-A236M -r ARO -i 358263681238947
 ```bash
 node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 ```
-
-### 📜 License
-
-This project is licensed under [The Unlicense](https://unlicense.org).
