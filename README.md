@@ -1,12 +1,12 @@
 ## 📱 Samsung Firmware Downloader
 
-This repository contains a script to download firmware for Samsung devices using Node.js.
+This repository contains a script to download firmware for Samsung devices using Node.js
 
 ### ✨ Features
 
-- 📥 Download the latest firmware for Samsung devices.
-- 🔓 Automatic decryption and decompression of the downloaded firmware.
-- 🔒 Secure interaction with Samsung servers using nonce-based authentication.
+- 📥 Download the latest firmware for Samsung devices
+- 🔓 Automatic decryption and decompression of the downloaded firmware
+- 🔒 Secure interaction with Samsung servers using nonce-based authentication
 
 ### 📋 Requirements
 
@@ -46,15 +46,15 @@ node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 
 ### 🤖 Dependabot Configuration
 
-This repository uses Dependabot to keep dependencies up-to-date. The current configuration is located in `.github/dependabot.yml` and is set to update npm dependencies weekly.
+This repository uses Dependabot to keep dependencies up-to-date. The current configuration is located in `.github/dependabot.yml` and is set to update npm dependencies weekly
 
 ### ⚙️ CI/CD with GitHub Actions
 
 The repository includes a GitHub Actions workflow for continuous integration and testing. The configuration file is located at `.github/workflows/node.js.yml` and performs the following tasks:
 
-- Install Node.js dependencies.
-- Run tests on different Node.js versions (18.x, 20.x, 22.x).
-- Execute the firmware download script.
+- Install Node.js dependencies
+- Run tests on different Node.js versions (18.x, 20.x, 22.x)
+- Execute the firmware download script
 
 ### 📦 Dependencies
 
@@ -68,8 +68,8 @@ This project uses the following dependencies:
 
 ### 📜 License
 
-This project is released under [The Unlicense](https://unlicense.org). For more details, see the [LICENSE](./LICENSE).
+This project is released under [The Unlicense](https://unlicense.org). For more details, see the [LICENSE](./LICENSE)
 
 ### 🤝 Contribution
 
-Contributions are welcome. Please open an issue or a pull request to discuss any major changes before making them.
+Contributions are welcome. Please open an issue or a pull request to discuss any major changes before making them
