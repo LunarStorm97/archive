@@ -69,7 +69,3 @@ This project uses the following dependencies:
 ### 📜 License
 
 This project is licensed under [The Unlicense](https://unlicense.org). For more details, see the [LICENSE](./LICENSE).
-
-### 🤝 Contribution
-
-Contributions are welcome. Please open an issue or a pull request to discuss any major changes before making them.
