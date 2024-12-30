@@ -30,12 +30,12 @@ This repository contains a script to download firmware for Samsung Devices using
 
 To run the script, use the following command, replacing `<model>`, `<region>` and `<imei>` with the corresponding values for your device:
 ```bash
-node index.mjs -m <model> -r <region> -i <imei>
+node main.mjs -m <model> -r <region> -i <imei>
 ```
 
 Example:
 ```bash
-node index.mjs -m SM-A236M -r ARO -i 358263681238947
+node maim.mjs -m SM-A236M -r ARO -i 358263681238947
 ```
 
 ## Dependabot Configuration
@@ -62,10 +62,8 @@ This project uses the following dependencies:
 
 ## License
 
-This project is released under [The Unlicense](https://unlicense.org). For more details, see the [LICENSE](./LICENSE) file.
+This project is released under [The Unlicense](https://unlicense.org). For more details, see the [LICENSE](./LICENSE).
 
 ## Contribution
 
 Contributions are welcome. Please open an issue or a pull request to discuss any major changes before making them.
-
----
