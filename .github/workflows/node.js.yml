@@ -24,23 +24,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: node index.mjs -m SM-A236M -r ARO -i 358263681238947
-      - name: Upload SM files as artifact
-        if: matrix.node-version == '22.x'
-        uses: actions/upload-artifact@v4.5.0
-        with:
-          name: SM-files
-          path: |
-            SM*/BL*
-            SM*/CP*
-            SM*/CSC*
-            SM*/HOME*
 
       - name: Set up Git LFS
         if: matrix.node-version == '22.x'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          rm -rf SM*/AP*
           git lfs install
           git lfs track "*.tar.md5"
           git add .gitattributes
@@ -49,8 +38,6 @@ jobs:
       - name: Commit and Push SM Files
         if: matrix.node-version == '22.x'
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
           git add SM*
           git commit -m "Add SM files"
           git push
