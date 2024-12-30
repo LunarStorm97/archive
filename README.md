@@ -2,18 +2,12 @@
 
 A Node.js script to download firmware for Samsung devices.
 
-## ✨ Features
-
-- 📥 Download the latest firmware for Samsung devices.
-- 🔓 Automatic decryption and decompression of the downloaded firmware.
-- 🔒 Secure interaction with Samsung servers using nonce-based authentication.
-
-## 📋 Requirements
+### 📋 Requirements
 
 - Node.js version 18.x, 20.x, or 22.x
 - npm (Node Package Manager)
 
-## 🚀 Installation
+### 🚀 Installation
 
 1. **Clone this repository:**
 
@@ -28,7 +22,7 @@ A Node.js script to download firmware for Samsung devices.
     npm install
     ```
 
-## 🛠️ Usage
+### 🛠️ Usage
 
 To run the script, use the following command, replacing `<model>`, `<region>`, and `<imei>` or `<serial>` with the corresponding values for your device:
 
@@ -36,19 +30,19 @@ To run the script, use the following command, replacing `<model>`, `<region>`, a
 node main.mjs -m <model> -r <region> -i <imei or serial>
 ```
 
-### Example using IMEI:
+#### Example using IMEI:
 
 ```bash
 node main.mjs -m SM-A236M -r ARO -i 358263681238947
 ```
 
-### Example using Serial Number (SN):
+#### Example using Serial Number (SN):
 
 ```bash
 node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 ```
 
-## 📦 Dependencies
+### 📦 Dependencies
 
 This project uses the following dependencies:
 
@@ -58,6 +52,6 @@ This project uses the following dependencies:
 - `unzip-stream`: ^0.3.4
 - `yargs`: ^17.7.2
 
-## 📜 License
+### 📜 License
 
 This project is licensed under [The Unlicense](https://unlicense.org).
