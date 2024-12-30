@@ -31,9 +31,6 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git lfs install
-          git lfs track "*.tar.md5"
-          git add .gitattributes
-          git commit -m "Track large files using Git LFS"
 
       - name: Commit and Push SM Files
         if: matrix.node-version == '22.x'
