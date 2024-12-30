@@ -26,10 +26,10 @@ npm install
 
 ## Usage
 
-To run the script, use the following command, replacing `<model>`, `<region>`, and `<imei>` or `<serial>` with the corresponding values for your device:
+To run the script, use the following command, replacing `<model>`, `<region>`, and `<imei>` or `<serial number>` with the corresponding values for your device:
 
 ```bash
-node main.mjs -m <model> -r <region> -i <imei or serial>
+node main.mjs -m <model> -r <region> -i <imei> or <serial number>
 ```
 
 Example using IMEI:
