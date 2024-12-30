@@ -25,6 +25,5 @@ jobs:
       uses: actions/setup-node@v4.1.0
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
     - run: npm install
     - run: node index.mjs -m SM-A236M -r ARO -i 358263681238947
