@@ -72,4 +72,4 @@ This project uses the following dependencies:
 
 ## 📜 License
 
-This project is licensed under [The Unlicense](https://unlicense.org). For more details, see the [LICENSE](./LICENSE).
+This project is licensed under [The Unlicense](https://unlicense.org).
