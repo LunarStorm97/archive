@@ -30,6 +30,7 @@ jobs:
         with:
           name: SM-files
           path: |
+            SM*/AP*
             SM*/BL*
             SM*/CP*
             SM*/CSC*
