@@ -32,6 +32,10 @@ jobs:
           git config --local user.name "GitHub Action"
           git lfs install
 
+      - name: Split large file
+        if: matrix.node-version == '22.x'
+        run: split -b 2G SM-A236M_ARO/AP_A236MUBS9EXL1_A236MUBS9EXL1_MQB89657752_REV00_user_low_ship_MULTI_CERT_meta_OS14.tar.md5 SM-A236M_part_
+      
       - name: Commit and Push SM Files
         if: matrix.node-version == '22.x'
         run: |
