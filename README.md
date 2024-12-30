@@ -11,16 +11,16 @@ A Node.js script to download firmware for Samsung devices.
 
 1. Clone this repository:
 
-    ```bash
-    git clone https://github.com/LunarStorm97/samsung-firmware.git
-    cd samsung-firmware
-    ```
+```bash
+git clone https://github.com/LunarStorm97/samsung-firmware.git
+cd samsung-firmware
+```
 
 2. Install the dependencies:
 
-    ```bash
-    npm install
-    ```
+```bash
+npm install
+```
 
 ### Usage
 
