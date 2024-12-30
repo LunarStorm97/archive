@@ -2,12 +2,12 @@
 
 A Node.js script to download firmware for Samsung devices.
 
-### 📋 Requirements
+### Requirements
 
 - Node.js version 18.x, 20.x, or 22.x
 - npm (Node Package Manager)
 
-### 🚀 Installation
+### Installation
 
 1. Clone this repository:
 
@@ -22,7 +22,7 @@ A Node.js script to download firmware for Samsung devices.
     npm install
     ```
 
-### 🛠️ Usage
+### Usage
 
 To run the script, use the following command, replacing `<model>`, `<region>`, and `<imei>` or `<serial>` with the corresponding values for your device:
 
