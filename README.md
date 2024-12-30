@@ -1,32 +1,34 @@
-## 📱 Samsung Firmware Downloader
+# 📱 Samsung Firmware Downloader
 
-This repository contains a script to download firmware for Samsung devices using Node.js
+A Node.js script to download firmware for Samsung devices.
 
-### ✨ Features
+## ✨ Features
 
 - 📥 Download the latest firmware for Samsung devices.
 - 🔓 Automatic decryption and decompression of the downloaded firmware.
 - 🔒 Secure interaction with Samsung servers using nonce-based authentication.
 
-### 📋 Requirements
+## 📋 Requirements
 
 - Node.js version 18.x, 20.x, or 22.x
 - npm (Node Package Manager)
 
-### 🚀 Installation
+## 🚀 Installation
 
-1. Clone this repository:
+1. **Clone this repository:**
+
     ```bash
     git clone https://github.com/LunarStorm97/samsung-firmware.git
     cd samsung-firmware
     ```
 
-2. Install the dependencies:
+2. **Install the dependencies:**
+
     ```bash
     npm install
     ```
 
-### 🛠️ Usage
+## 🛠️ Usage
 
 To run the script, use the following command, replacing `<model>`, `<region>`, and `<imei>` or `<serial>` with the corresponding values for your device:
 
@@ -34,29 +36,31 @@ To run the script, use the following command, replacing `<model>`, `<region>`, a
 node main.mjs -m <model> -r <region> -i <imei or serial>
 ```
 
-Example using IMEI:
+### Example using IMEI:
+
 ```bash
 node main.mjs -m SM-A236M -r ARO -i 358263681238947
 ```
 
-Example using Serial Number (SN):
+### Example using Serial Number (SN):
+
 ```bash
 node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 ```
 
-### 🤖 Dependabot Configuration
+## 🤖 Dependabot Configuration
 
-This repository uses Dependabot to keep dependencies up-to-date. The current configuration is located in `.github/dependabot.yml` and is set to update npm dependencies weekly.
+This repository uses **Dependabot** to keep dependencies up-to-date. The current configuration is located in `.github/dependabot.yml` and updates npm dependencies on a weekly basis.
 
-### ⚙️ CI/CD with GitHub Actions
+## ⚙️ CI/CD with GitHub Actions
 
-The repository includes a GitHub Actions workflow for continuous integration and testing. The configuration file is located at `.github/workflows/node.js.yml` and performs the following tasks:
+The repository includes a **GitHub Actions** workflow for continuous integration and testing. The configuration file is located at `.github/workflows/node.js.yml` and performs the following tasks:
 
 - Install Node.js dependencies.
-- Run tests on different Node.js versions (18.x, 20.x, 22.x).
+- Run tests on multiple Node.js versions (18.x, 20.x, 22.x).
 - Execute the firmware download script.
 
-### 📦 Dependencies
+## 📦 Dependencies
 
 This project uses the following dependencies:
 
@@ -66,6 +70,6 @@ This project uses the following dependencies:
 - `unzip-stream`: ^0.3.4
 - `yargs`: ^17.7.2
 
-### 📜 License
+## 📜 License
 
 This project is licensed under [The Unlicense](https://unlicense.org). For more details, see the [LICENSE](./LICENSE).
