@@ -34,12 +34,12 @@ To run the script, use the following command, replacing `<model>`, `<region>`, a
 node main.mjs -m <model> -r <region> -i <imei or serial>
 ```
 
-#### Example using IMEI:
+### Example using IMEI:
 ```bash
 node main.mjs -m SM-A236M -r ARO -i 358263681238947
 ```
 
-#### Example using Serial Number (SN):
+### Example using Serial Number (SN):
 ```bash
 node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 ```
