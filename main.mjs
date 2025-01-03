@@ -291,13 +291,9 @@ const { argv } = yargs(hideBin(process.argv))
   .help();
 
 (async () => {
-  try {
     const latestFirmware = await getLatestFirmwareVersion(
       argv.model,
       argv.region,
     );
     await downloadFirmware(argv.model, argv.region, argv.imei, latestFirmware);
-  } catch (error) {
-    throw new Error("An error occurred during the process: " + error.message);
-  }
 })();
