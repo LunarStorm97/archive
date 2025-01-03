@@ -291,9 +291,9 @@ const { argv } = yargs(hideBin(process.argv))
   .help();
 
 (async () => {
-    const latestFirmware = await getLatestFirmwareVersion(
-      argv.model,
-      argv.region,
-    );
-    await downloadFirmware(argv.model, argv.region, argv.imei, latestFirmware);
+  const latestFirmware = await getLatestFirmwareVersion(
+    argv.model,
+    argv.region,
+  );
+  await downloadFirmware(argv.model, argv.region, argv.imei, latestFirmware);
 })();
