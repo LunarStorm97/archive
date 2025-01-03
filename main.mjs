@@ -175,7 +175,6 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
         Authorization:
           'FUS nonce="", signature="", nc="", type="", realm="", newauth="1"',
         "User-Agent": "Kies2.0_FUS",
-        Accept: "application/xml",
       },
     },
   );
@@ -192,7 +191,6 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
     {
       headers: {
         ...headers,
-        Accept: "application/xml",
         "Content-Type": "application/xml",
       },
     },
@@ -212,7 +210,6 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
     {
       headers: {
         ...headers,
-        Accept: "application/xml",
         "Content-Type": "application/xml",
       },
     },
