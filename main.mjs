@@ -50,7 +50,9 @@ const getAuthorization = (nonceDecrypted) => {
 const handleAuthRotation = (nonceEncrypted) => {
   const nonceDecrypted = decryptNonce(nonceEncrypted);
   return {
-    Authorization: `FUS nonce="${nonceEncrypted}", signature="${getAuthorization(nonceDecrypted)}", nc="", type="", realm="", newauth="1"`,
+    Authorization: `FUS nonce="${nonceEncrypted}", signature="${getAuthorization(
+      nonceDecrypted,
+    )}", nc="", type="", realm="", newauth="1"`,
     nonceDecrypted,
     nonceEncrypted,
   };
