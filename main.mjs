@@ -8,8 +8,7 @@ import axios from "axios";
 import chalk from "chalk";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import unzip from "unzip-stream";
-import yargs from "yargs/yargs";
-import { hideBin } from "yargs/helpers";
+import { Command } from "commander";
 
 const AUTH_KEY = "9u7qab84rpc16gvk";
 const BASE_URL = "https://neofussvr.sslcs.cdngc.net";
@@ -271,31 +270,20 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
     });
 };
 
-const { argv } = yargs(hideBin(process.argv))
-  .option("model", {
-    alias: "m",
-    describe: "Model",
-    type: "string",
-    demandOption: true,
-  })
-  .option("region", {
-    alias: "r",
-    describe: "Region",
-    type: "string",
-    demandOption: true,
-  })
-  .option("imei", {
-    alias: "i",
-    describe: "IMEI/Serial Number",
-    type: "string",
-    demandOption: true,
-  })
-  .help();
+const program = new Command();
+
+program
+  .requiredOption("-m, --model <model>", "Model")
+  .requiredOption("-r, --region <region>", "Region")
+  .requiredOption("-i, --imei <imei>", "IMEI/Serial Number")
+  .parse(process.argv);
+
+const options = program.opts();
 
 (async () => {
   const latestFirmware = await getLatestFirmwareVersion(
-    argv.model,
-    argv.region,
+    options.model,
+    options.region,
   );
-  await downloadFirmware(argv.model, argv.region, argv.imei, latestFirmware);
+  await downloadFirmware(options.model, options.region, options.imei, latestFirmware);
 })();
