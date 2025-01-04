@@ -20,7 +20,7 @@ const decryptNonce = (nonceEncrypted) => {
   const nonceDecipher = crypto.createDecipheriv(
     "aes-256-cbc",
     NONCE_KEY,
-    NONCE_KEY.slice(0, 16)
+    NONCE_KEY.slice(0, 16),
   );
   return (
     nonceDecipher.update(nonceEncrypted, "base64", "utf-8") +
@@ -32,12 +32,12 @@ const getAuthorization = (nonceDecrypted) => {
   const key =
     Array.from(
       { length: 16 },
-      (_, i) => NONCE_KEY[nonceDecrypted.charCodeAt(i) % 16]
+      (_, i) => NONCE_KEY[nonceDecrypted.charCodeAt(i) % 16],
     ).join("") + AUTH_KEY;
   const authCipher = crypto.createCipheriv(
     "aes-256-cbc",
     key,
-    key.slice(0, 16)
+    key.slice(0, 16),
   );
   return (
     authCipher.update(nonceDecrypted, "utf8", "base64") +
@@ -49,7 +49,7 @@ const handleAuthRotation = (nonceEncrypted) => {
   const nonceDecrypted = decryptNonce(nonceEncrypted);
   return {
     Authorization: `FUS nonce="${nonceEncrypted}", signature="${getAuthorization(
-      nonceDecrypted
+      nonceDecrypted,
     )}", nc="", type="", realm="", newauth="1"`,
     nonceDecrypted,
     nonceEncrypted,
@@ -156,7 +156,7 @@ const getDecryptionKey = (version, logicalValue) =>
 const getLatestFirmwareVersion = async (model, region) => {
   console.log(chalk.yellow("Fetching latest firmware version..."));
   const response = await axios.get(
-    `http://fota-cloud-dn.ospserver.net/firmware/${region}/${model}/version.xml`
+    `http://fota-cloud-dn.ospserver.net/firmware/${region}/${model}/version.xml`,
   );
   return parseLatestFirmwareVersion(response.data);
 };
@@ -176,7 +176,7 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
           'FUS nonce="", signature="", nc="", type="", realm="", newauth="1"',
         "User-Agent": "Kies2.0_FUS",
       },
-    }
+    },
   );
   updateHeaders(nonceResponse.headers, headers, nonceState);
 
@@ -186,21 +186,21 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
     getBinaryMsg(
       "inform",
       { imei, version: `${pda}/${csc}/${modem}/${pda}`, region, model },
-      nonceState.decrypted
+      nonceState.decrypted,
     ),
     {
       headers: {
         ...headers,
         "Content-Type": "application/xml",
       },
-    }
+    },
   );
   updateHeaders(binaryInfoResponse.headers, headers, nonceState);
 
   const binaryInfo = parseBinaryInfo(binaryInfoResponse.data);
   const decryptionKey = getDecryptionKey(
     binaryInfo.binaryVersion,
-    binaryInfo.binaryLogicValue
+    binaryInfo.binaryLogicValue,
   );
 
   console.log(chalk.green("Initializing binary download..."));
@@ -212,21 +212,21 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
         ...headers,
         "Content-Type": "application/xml",
       },
-    }
+    },
   );
   updateHeaders(initResponse.headers, headers, nonceState);
 
   const binaryDecipher = crypto.createDecipheriv(
     "aes-128-ecb",
     decryptionKey,
-    null
+    null,
   );
   const res = await axios.get(
     `http://cloud-neofussvr.samsungmobile.com/NF_DownloadBinaryForMass.do?file=${binaryInfo.binaryModelPath}${binaryInfo.binaryFilename}`,
     {
       headers,
       responseType: "stream",
-    }
+    },
   );
 
   const outputFolder = `${process.cwd()}/${model}_${region}/`;
@@ -251,8 +251,8 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
       if (progress !== lastProgress) {
         process.stdout.write(
           chalk.cyan(
-            `Downloading ${downloadedGB} / ${totalSizeInGB} GB = ${progress}%\r`
-          )
+            `Downloading ${downloadedGB} / ${totalSizeInGB} GB = ${progress}%\r`,
+          ),
         );
         lastProgress = progress;
       }
@@ -282,12 +282,12 @@ const options = program.opts();
 (async () => {
   const latestFirmware = await getLatestFirmwareVersion(
     options.model,
-    options.region
+    options.region,
   );
   await downloadFirmware(
     options.model,
     options.region,
     options.imei,
-    latestFirmware
+    latestFirmware,
   );
 })();
