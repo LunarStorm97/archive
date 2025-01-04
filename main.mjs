@@ -11,8 +11,8 @@ const AUTH_KEY = "9u7qab84rpc16gvk";
 const FUS_URL = "https://neofussvr.sslcs.cdngc.net";
 const NONCE_KEY = "vicopx7dqu06emacgpnpy8j8zwhduwlh";
 
-const parser = new XMLBuilder({});
-const xmlParser = new XMLParser();
+const builder = new XMLBuilder({});
+const parser = new XMLParser();
 
 const decryptNonce = (nonceEncrypted) => {
   const nonceDecipher = crypto.createDecipheriv(
@@ -70,7 +70,7 @@ const updateHeaders = (responseHeaders, headers, nonceState) => {
 };
 
 const buildXMLMsg = (msgType, data) =>
-  parser.build({
+  builder.build({
     FUSMsg: {
       FUSHdr: { ProtoVer: "1.0" },
       FUSBody: { Put: { ...data } },
@@ -106,7 +106,7 @@ const getLogicCheck = (input, nonce) =>
     .join("");
 
 const parseBinaryInfo = (data) => {
-  const parsedInfo = xmlParser.parse(data);
+  const parsedInfo = parser.parse(data);
   const binaryInfo = {
     binaryByteSize: parsedInfo.FUSMsg.FUSBody.Put.BINARY_BYTE_SIZE.Data,
     binaryDescription: parsedInfo.FUSMsg.FUSBody.Put.DESCRIPTION.Data || "N/A",
@@ -129,7 +129,7 @@ const parseBinaryInfo = (data) => {
 };
 
 const parseLatestFirmwareVersion = (data) => {
-  const parsedData = xmlParser.parse(data);
+  const parsedData = parser.parse(data);
   const [pda, csc, modem] =
     parsedData.versioninfo.firmware.version.latest.split("/");
   return { pda, csc, modem };
