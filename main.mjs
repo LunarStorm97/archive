@@ -5,10 +5,10 @@ import fs from "fs";
 import path from "path";
 
 import axios from "axios";
+import { Command } from "commander";
 import chalk from "chalk";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import unzip from "unzip-stream";
-import { Command } from "commander";
 
 const AUTH_KEY = "9u7qab84rpc16gvk";
 const BASE_URL = "https://neofussvr.sslcs.cdngc.net";
@@ -271,7 +271,6 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
 };
 
 const program = new Command();
-
 program
   .requiredOption("-m, --model <model>", "Model")
   .requiredOption("-r, --region <region>", "Region")
@@ -285,5 +284,10 @@ const options = program.opts();
     options.model,
     options.region,
   );
-  await downloadFirmware(options.model, options.region, options.imei, latestFirmware);
+  await downloadFirmware(
+    options.model,
+    options.region,
+    options.imei,
+    latestFirmware,
+  );
 })();
