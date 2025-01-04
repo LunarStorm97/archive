@@ -10,7 +10,7 @@ import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import unzip from "unzip-stream";
 
 const AUTH_KEY = "9u7qab84rpc16gvk";
-const BASE_URL = "https://neofussvr.sslcs.cdngc.net";
+const FUS_URL = "https://neofussvr.sslcs.cdngc.net";
 const NONCE_KEY = "vicopx7dqu06emacgpnpy8j8zwhduwlh";
 
 const parser = new XMLBuilder({});
@@ -168,7 +168,7 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
 
   console.log(chalk.green("Fetching nonce..."));
   const nonceResponse = await axios.post(
-    `${BASE_URL}/NF_DownloadGenerateNonce.do`,
+    `${FUS_URL}/NF_DownloadGenerateNonce.do`,
     "",
     {
       headers: {
@@ -182,7 +182,7 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
 
   console.log(chalk.yellow("Fetching binary info..."));
   const binaryInfoResponse = await axios.post(
-    `${BASE_URL}/NF_DownloadBinaryInform.do`,
+    `${FUS_URL}/NF_DownloadBinaryInform.do`,
     getBinaryMsg(
       "inform",
       { imei, version: `${pda}/${csc}/${modem}/${pda}`, region, model },
@@ -205,7 +205,7 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
 
   console.log(chalk.green("Initializing binary download..."));
   const initResponse = await axios.post(
-    `${BASE_URL}/NF_DownloadBinaryInitForMass.do`,
+    `${FUS_URL}/NF_DownloadBinaryInitForMass.do`,
     getBinaryMsg("init", binaryInfo.binaryFilename, nonceState.decrypted),
     {
       headers: {
