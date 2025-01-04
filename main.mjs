@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
@@ -48,20 +46,15 @@ const getAuthorization = (nonceDecrypted) => {
 const handleAuthRotation = (nonceEncrypted) => {
   const nonceDecrypted = decryptNonce(nonceEncrypted);
   return {
-    Authorization: `FUS nonce="${nonceEncrypted}", signature="${getAuthorization(
-      nonceDecrypted,
-    )}", nc="", type="", realm="", newauth="1"`,
+    Authorization: `FUS nonce="${nonceEncrypted}", signature="${getAuthorization(nonceDecrypted)}", nc="", type="", realm="", newauth="1"`,
     nonceDecrypted,
     nonceEncrypted,
   };
 };
 
-const extractSessionIDFromCookies = (cookies) => {
-  return (
-    cookies?.find((cookie) => cookie.startsWith("JSESSIONID"))?.split(";")[0] ||
-    null
-  );
-};
+const extractSessionIDFromCookies = (cookies) =>
+  cookies?.find((cookie) => cookie.startsWith("JSESSIONID"))?.split(";")[0] ||
+  null;
 
 const updateHeaders = (responseHeaders, headers, nonceState) => {
   const { nonce } = responseHeaders;
@@ -72,50 +65,45 @@ const updateHeaders = (responseHeaders, headers, nonceState) => {
     nonceState.encrypted = nonceEncrypted;
     headers.Authorization = Authorization;
   }
-
   const sessionID = extractSessionIDFromCookies(responseHeaders["set-cookie"]);
   if (sessionID) headers.Cookie = sessionID;
 };
 
-const buildXMLMsg = (msgType, data) => {
-  return parser.build({
+const buildXMLMsg = (msgType, data) =>
+  parser.build({
     FUSMsg: {
       FUSHdr: { ProtoVer: "1.0" },
-      FUSBody: {
-        Put: { ...data },
-      },
+      FUSBody: { Put: { ...data } },
     },
   });
-};
 
 const getBinaryMsg = (type, data, nonce) => {
-  if (type === "init") {
-    return buildXMLMsg(type, {
-      BINARY_FILE_NAME: { Data: data },
-      LOGIC_CHECK: {
-        Data: getLogicCheck(data.split(".")[0].slice(-16), nonce),
-      },
-    });
-  } else if (type === "inform") {
-    return buildXMLMsg(type, {
-      ACCESS_MODE: { Data: 2 },
-      BINARY_NATURE: { Data: 1 },
-      CLIENT_PRODUCT: { Data: "Smart Switch" },
-      CLIENT_VERSION: { Data: "4.3.24062_1" },
-      DEVICE_IMEI_PUSH: { Data: data.imei },
-      DEVICE_FW_VERSION: { Data: data.version },
-      DEVICE_LOCAL_CODE: { Data: data.region },
-      DEVICE_MODEL_NAME: { Data: data.model },
-      LOGIC_CHECK: { Data: getLogicCheck(data.version, nonce) },
-    });
-  }
+  const payload =
+    type === "init"
+      ? {
+          BINARY_FILE_NAME: { Data: data },
+          LOGIC_CHECK: {
+            Data: getLogicCheck(data.split(".")[0].slice(-16), nonce),
+          },
+        }
+      : {
+          ACCESS_MODE: { Data: 2 },
+          BINARY_NATURE: { Data: 1 },
+          CLIENT_PRODUCT: { Data: "Smart Switch" },
+          CLIENT_VERSION: { Data: "4.3.24062_1" },
+          DEVICE_IMEI_PUSH: { Data: data.imei },
+          DEVICE_FW_VERSION: { Data: data.version },
+          DEVICE_LOCAL_CODE: { Data: data.region },
+          DEVICE_MODEL_NAME: { Data: data.model },
+          LOGIC_CHECK: { Data: getLogicCheck(data.version, nonce) },
+        };
+  return buildXMLMsg(type, payload);
 };
 
-const getLogicCheck = (input, nonce) => {
-  return Array.from(nonce)
+const getLogicCheck = (input, nonce) =>
+  Array.from(nonce)
     .map((char) => input[char.charCodeAt(0) & 0xf])
     .join("");
-};
 
 const parseBinaryInfo = (data) => {
   const parsedInfo = xmlParser.parse(data);
@@ -188,12 +176,7 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
       { imei, version: `${pda}/${csc}/${modem}/${pda}`, region, model },
       nonceState.decrypted,
     ),
-    {
-      headers: {
-        ...headers,
-        "Content-Type": "application/xml",
-      },
-    },
+    { headers: { ...headers, "Content-Type": "application/xml" } },
   );
   updateHeaders(binaryInfoResponse.headers, headers, nonceState);
 
@@ -207,12 +190,7 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
   const initResponse = await axios.post(
     `${FUS_URL}/NF_DownloadBinaryInitForMass.do`,
     getBinaryMsg("init", binaryInfo.binaryFilename, nonceState.decrypted),
-    {
-      headers: {
-        ...headers,
-        "Content-Type": "application/xml",
-      },
-    },
+    { headers: { ...headers, "Content-Type": "application/xml" } },
   );
   updateHeaders(initResponse.headers, headers, nonceState);
 
@@ -223,10 +201,7 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
   );
   const res = await axios.get(
     `http://cloud-neofussvr.samsungmobile.com/NF_DownloadBinaryForMass.do?file=${binaryInfo.binaryModelPath}${binaryInfo.binaryFilename}`,
-    {
-      headers,
-      responseType: "stream",
-    },
+    { headers, responseType: "stream" },
   );
 
   const outputFolder = `${process.cwd()}/${model}_${region}/`;
