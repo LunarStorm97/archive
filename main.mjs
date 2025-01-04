@@ -271,6 +271,7 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
 };
 
 const program = new Command();
+
 program
   .requiredOption("-m, --model <model>", "Model")
   .requiredOption("-r, --region <region>", "Region")
