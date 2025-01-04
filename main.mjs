@@ -2,8 +2,8 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
-import { Command } from "commander";
 import chalk from "chalk";
+import { Command } from "commander";
 import { XMLBuilder, XMLParser } from "fast-xml-parser";
 import unzip from "unzip-stream";
 
