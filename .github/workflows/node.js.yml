@@ -29,10 +29,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
       - uses: actions/checkout@v4.2.2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.1.0
         with:
+          # Version Spec of the version to use in SemVer notation.
+          # It also admits such aliases as lts/*, latest, nightly and canary builds
+          # Examples: 12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly, latest, node
           node-version: ${{ matrix.node-version }}
+
+      # Runs a single command using the runners shell
       - run: npm install
       - run: node main.mjs -m SM-A236M -r ARO -i 358263681238947
