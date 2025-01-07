@@ -78,25 +78,47 @@ const buildXMLMsg = (msgType, data) =>
   });
 
 const getBinaryMsg = (type, data, nonce) => {
-  const payload =
-    type === "init"
-      ? {
-          BINARY_FILE_NAME: { Data: data },
-          LOGIC_CHECK: {
-            Data: getLogicCheck(data.split(".")[0].slice(-16), nonce),
-          },
-        }
-      : {
-          ACCESS_MODE: { Data: 2 },
-          BINARY_NATURE: { Data: 1 },
-          CLIENT_PRODUCT: { Data: "Smart Switch" },
-          CLIENT_VERSION: { Data: "4.3.24062_1" },
-          DEVICE_IMEI_PUSH: { Data: data.imei },
-          DEVICE_FW_VERSION: { Data: data.version },
-          DEVICE_LOCAL_CODE: { Data: data.region },
-          DEVICE_MODEL_NAME: { Data: data.model },
-          LOGIC_CHECK: { Data: getLogicCheck(data.version, nonce) },
+  let payload;
+  if (type === "init") {
+    payload = {
+      BINARY_FILE_NAME: { Data: data },
+      LOGIC_CHECK: {
+        Data: getLogicCheck(data.split(".")[0].slice(-16), nonce),
+      },
+    };
+  } else {
+    const regionSpecificData = (region) => {
+      if (region === "EUX") {
+        return {
+          DEVICE_AID_CODE: { Data: region },
+          DEVICE_CC_CODE: { Data: "DE" },
+          MCC_NUM: { Data: "262" },
+          MNC_NUM: { Data: "01" },
         };
+      } else if (region === "EUY") {
+        return {
+          DEVICE_AID_CODE: { Data: region },
+          DEVICE_CC_CODE: { Data: "RS" },
+          MCC_NUM: { Data: "220" },
+          MNC_NUM: { Data: "01" },
+        };
+      }
+      return {};
+    };
+
+    payload = {
+      ACCESS_MODE: { Data: 2 },
+      BINARY_NATURE: { Data: 1 },
+      CLIENT_PRODUCT: { Data: "Smart Switch" },
+      CLIENT_VERSION: { Data: "4.3.24062_1" },
+      DEVICE_IMEI_PUSH: { Data: data.imei },
+      DEVICE_FW_VERSION: { Data: data.version },
+      DEVICE_LOCAL_CODE: { Data: data.region },
+      DEVICE_MODEL_NAME: { Data: data.model },
+      LOGIC_CHECK: { Data: getLogicCheck(data.version, nonce) },
+      ...regionSpecificData(data.region),
+    };
+  }
   return buildXMLMsg(type, payload);
 };
 
