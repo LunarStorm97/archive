@@ -72,13 +72,14 @@ const updateHeaders = (responseHeaders, headers, nonceState) => {
   if (sessionID) headers.Cookie = sessionID;
 };
 
-const buildXMLMsg = (msgType, data) =>
-  builder.build({
+const buildXMLMsg = (msgType, data) => {
+  return builder.build({
     FUSMsg: {
       FUSHdr: { ProtoVer: "1.0" },
       FUSBody: { Put: { ...data } },
     },
   });
+};
 
 const getBinaryMsg = (type, data, nonce) => {
   const payload =
