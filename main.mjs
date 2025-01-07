@@ -18,7 +18,7 @@ const decryptNonce = (nonceEncrypted) => {
   const nonceDecipher = crypto.createDecipheriv(
     "aes-256-cbc",
     NONCE_KEY,
-    NONCE_KEY.slice(0, 16),
+    NONCE_KEY.slice(0, 16)
   );
   return (
     nonceDecipher.update(nonceEncrypted, "base64", "utf-8") +
@@ -28,15 +28,11 @@ const decryptNonce = (nonceEncrypted) => {
 
 const getAuthorization = (nonceDecrypted) => {
   const key =
-    Array.from(
-      { length: 16 },
-      (_, i) => NONCE_KEY[nonceDecrypted.charCodeAt(i) % 16],
+    Array.from({ length: 16 }, (_, i) => 
+      NONCE_KEY[nonceDecrypted.charCodeAt(i) % 16]
     ).join("") + AUTH_KEY;
-  const authCipher = crypto.createCipheriv(
-    "aes-256-cbc",
-    key,
-    key.slice(0, 16),
-  );
+
+  const authCipher = crypto.createCipheriv("aes-256-cbc", key, key.slice(0, 16));
   return (
     authCipher.update(nonceDecrypted, "utf8", "base64") +
     authCipher.final("base64")
@@ -46,15 +42,16 @@ const getAuthorization = (nonceDecrypted) => {
 const handleAuthRotation = (nonceEncrypted) => {
   const nonceDecrypted = decryptNonce(nonceEncrypted);
   return {
-    Authorization: `FUS nonce="${nonceEncrypted}", signature="${getAuthorization(nonceDecrypted)}", nc="", type="", realm="", newauth="1"`,
+    Authorization: `FUS nonce="${nonceEncrypted}", signature="${getAuthorization(
+      nonceDecrypted
+    )}", nc="", type="", realm="", newauth="1"`,
     nonceDecrypted,
     nonceEncrypted,
   };
 };
 
 const extractSessionIDFromCookies = (cookies) =>
-  cookies?.find((cookie) => cookie.startsWith("JSESSIONID"))?.split(";")[0] ||
-  null;
+  cookies?.find((cookie) => cookie.startsWith("JSESSIONID"))?.split(";")[0] || null;
 
 const updateHeaders = (responseHeaders, headers, nonceState) => {
   const { nonce } = responseHeaders;
@@ -104,13 +101,13 @@ const getBinaryMsg = (type, data, nonce) => {
                 MNC_NUM: { Data: "01" },
               }
             : data.region === "EUY"
-              ? {
-                  DEVICE_AID_CODE: { Data: data.region },
-                  DEVICE_CC_CODE: { Data: "RS" },
-                  MCC_NUM: { Data: "220" },
-                  MNC_NUM: { Data: "01" },
-                }
-              : {}),
+            ? {
+                DEVICE_AID_CODE: { Data: data.region },
+                DEVICE_CC_CODE: { Data: "RS" },
+                MCC_NUM: { Data: "220" },
+                MNC_NUM: { Data: "01" },
+              }
+            : {}),
         };
   return buildXMLMsg(type, payload);
 };
@@ -145,21 +142,17 @@ const parseBinaryInfo = (data) => {
 
 const parseLatestFirmwareVersion = (data) => {
   const parsedData = parser.parse(data);
-  const [pda, csc, modem] =
-    parsedData.versioninfo.firmware.version.latest.split("/");
+  const [pda, csc, modem] = parsedData.versioninfo.firmware.version.latest.split("/");
   return { pda, csc, modem };
 };
 
 const getDecryptionKey = (version, logicalValue) =>
-  crypto
-    .createHash("md5")
-    .update(getLogicCheck(version, logicalValue))
-    .digest();
+  crypto.createHash("md5").update(getLogicCheck(version, logicalValue)).digest();
 
 const getLatestFirmwareVersion = async (model, region) => {
   console.log(chalk.yellow("Fetching latest firmware version..."));
   const response = await axios.get(
-    `http://fota-cloud-dn.ospserver.net/firmware/${region}/${model}/version.xml`,
+    `http://fota-cloud-dn.ospserver.net/firmware/${region}/${model}/version.xml`
   );
   return parseLatestFirmwareVersion(response.data);
 };
@@ -175,11 +168,10 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
     "",
     {
       headers: {
-        Authorization:
-          'FUS nonce="", signature="", nc="", type="", realm="", newauth="1"',
+        Authorization: 'FUS nonce="", signature="", nc="", type="", realm="", newauth="1"',
         "User-Agent": "Kies2.0_FUS",
       },
-    },
+    }
   );
   updateHeaders(nonceResponse.headers, headers, nonceState);
 
@@ -189,34 +181,30 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
     getBinaryMsg(
       "inform",
       { imei, version: `${pda}/${csc}/${modem}/${pda}`, region, model },
-      nonceState.decrypted,
+      nonceState.decrypted
     ),
-    { headers: { ...headers, "Content-Type": "application/xml" } },
+    { headers: { ...headers, "Content-Type": "application/xml" } }
   );
   updateHeaders(binaryInfoResponse.headers, headers, nonceState);
 
   const binaryInfo = parseBinaryInfo(binaryInfoResponse.data);
   const decryptionKey = getDecryptionKey(
     binaryInfo.binaryVersion,
-    binaryInfo.binaryLogicValue,
+    binaryInfo.binaryLogicValue
   );
 
   console.log(chalk.green("Initializing binary download..."));
   const initResponse = await axios.post(
     `${FUS_URL}/NF_DownloadBinaryInitForMass.do`,
     getBinaryMsg("init", binaryInfo.binaryFilename, nonceState.decrypted),
-    { headers: { ...headers, "Content-Type": "application/xml" } },
+    { headers: { ...headers, "Content-Type": "application/xml" } }
   );
   updateHeaders(initResponse.headers, headers, nonceState);
 
-  const binaryDecipher = crypto.createDecipheriv(
-    "aes-128-ecb",
-    decryptionKey,
-    null,
-  );
+  const binaryDecipher = crypto.createDecipheriv("aes-128-ecb", decryptionKey, null);
   const res = await axios.get(
     `http://cloud-neofussvr.samsungmobile.com/NF_DownloadBinaryForMass.do?file=${binaryInfo.binaryModelPath}${binaryInfo.binaryFilename}`,
-    { headers, responseType: "stream" },
+    { headers, responseType: "stream" }
   );
 
   const outputFolder = `${process.cwd()}/${model}_${region}/`;
@@ -229,20 +217,14 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
     .on("data", (buffer) => {
       downloadedSize += buffer.length;
       const downloadedGB = (downloadedSize / (1024 * 1024 * 1024)).toFixed(2);
-      const totalSizeInGB = (
-        binaryInfo.binaryByteSize /
-        (1024 * 1024 * 1024)
-      ).toFixed(2);
-      const progress = (
-        (downloadedSize / (1024 * 1024 * 1024) / totalSizeInGB) *
-        100
-      ).toFixed(2);
+      const totalSizeInGB = (binaryInfo.binaryByteSize / (1024 * 1024 * 1024)).toFixed(2);
+      const progress = ((downloadedGB / totalSizeInGB) * 100).toFixed(2);
 
       if (progress !== lastProgress) {
         process.stdout.write(
           chalk.cyan(
-            `Downloading ${downloadedGB} / ${totalSizeInGB} GB = ${progress}%\r`,
-          ),
+            `Downloading ${downloadedGB} / ${totalSizeInGB} GB = ${progress}%\r`
+          )
         );
         lastProgress = progress;
       }
@@ -270,14 +252,6 @@ program
 const options = program.opts();
 
 (async () => {
-  const latestFirmware = await getLatestFirmwareVersion(
-    options.model,
-    options.region,
-  );
-  await downloadFirmware(
-    options.model,
-    options.region,
-    options.imei,
-    latestFirmware,
-  );
+  const latestFirmware = await getLatestFirmwareVersion(options.model, options.region);
+  await downloadFirmware(options.model, options.region, options.imei, latestFirmware);
 })();
