@@ -23,5 +23,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
-      - run: node main.mjs -m SM-A236M -r ARO -i 358263681238947
-      - run: node main.mjs -m SM-S911B -r EUE -i 352404911234563
+      - run: node main.mjs -m SM-A236E -r THL -i R5CTC1D83FP
+      - run: node main.mjs -m SM-S911B -r EUX -i 352404911234563
