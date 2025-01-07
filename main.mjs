@@ -96,6 +96,21 @@ const getBinaryMsg = (type, data, nonce) => {
           DEVICE_LOCAL_CODE: { Data: data.region },
           DEVICE_MODEL_NAME: { Data: data.model },
           LOGIC_CHECK: { Data: getLogicCheck(data.version, nonce) },
+          ...(data.region === "EUX"
+            ? {
+                DEVICE_AID_CODE: { Data: data.region },
+                DEVICE_CC_CODE: { Data: "DE" },
+                MCC_NUM: { Data: "262" },
+                MNC_NUM: { Data: "01" },
+              }
+            : data.region === "EUY"
+            ? {
+                DEVICE_AID_CODE: { Data: data.region },
+                DEVICE_CC_CODE: { Data: "RS" },
+                MCC_NUM: { Data: "220" },
+                MNC_NUM: { Data: "01" },
+              }
+            : {}),
         };
   return buildXMLMsg(type, payload);
 };
