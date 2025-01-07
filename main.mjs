@@ -55,9 +55,12 @@ const handleAuthRotation = (nonceEncrypted) => {
   };
 };
 
-const extractSessionIDFromCookies = (cookies) =>
-  cookies?.find((cookie) => cookie.startsWith("JSESSIONID"))?.split(";")[0] ||
-  null;
+const extractSessionIDFromCookies = (cookies) => {
+  return (
+    cookies?.find((cookie) => cookie.startsWith("JSESSIONID"))?.split(";")[0] ||
+    null
+  );
+};
 
 const updateHeaders = (responseHeaders, headers, nonceState) => {
   const { nonce } = responseHeaders;
@@ -108,21 +111,22 @@ const getBinaryMsg = (type, data, nonce) => {
                 MNC_NUM: { Data: "01" },
               }
             : data.region === "EUY"
-              ? {
-                  DEVICE_AID_CODE: { Data: data.region },
-                  DEVICE_CC_CODE: { Data: "RS" },
-                  MCC_NUM: { Data: "220" },
-                  MNC_NUM: { Data: "01" },
-                }
-              : {}),
+            ? {
+                DEVICE_AID_CODE: { Data: data.region },
+                DEVICE_CC_CODE: { Data: "RS" },
+                MCC_NUM: { Data: "220" },
+                MNC_NUM: { Data: "01" },
+              }
+            : {}),
         };
   return buildXMLMsg(type, payload);
 };
 
-const getLogicCheck = (input, nonce) =>
-  Array.from(nonce)
+const getLogicCheck = (input, nonce) => {
+  return Array.from(nonce)
     .map((char) => input[char.charCodeAt(0) & 0xf])
     .join("");
+};
 
 const parseBinaryInfo = (data) => {
   const parsedInfo = parser.parse(data);
@@ -154,11 +158,12 @@ const parseLatestFirmwareVersion = (data) => {
   return { pda, csc, modem };
 };
 
-const getDecryptionKey = (version, logicalValue) =>
-  crypto
+const getDecryptionKey = (version, logicalValue) => {
+  return crypto
     .createHash("md5")
     .update(getLogicCheck(version, logicalValue))
     .digest();
+};
 
 const getLatestFirmwareVersion = async (model, region) => {
   console.log(chalk.yellow("Fetching latest firmware version..."));
