@@ -78,6 +78,11 @@ const buildXMLMsg = (msgType, data) =>
   });
 
 const getBinaryMsg = (type, data, nonce) => {
+  // If the region is "EUX", change it to "DE"
+  if (data.region === "EUX") {
+    data.region = "DE";
+  }
+
   const payload =
     type === "init"
       ? {
