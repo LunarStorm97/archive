@@ -104,13 +104,13 @@ const getBinaryMsg = (type, data, nonce) => {
                 MNC_NUM: { Data: "01" },
               }
             : data.region === "EUY"
-            ? {
-                DEVICE_AID_CODE: { Data: data.region },
-                DEVICE_CC_CODE: { Data: "RS" },
-                MCC_NUM: { Data: "220" },
-                MNC_NUM: { Data: "01" },
-              }
-            : {}),
+              ? {
+                  DEVICE_AID_CODE: { Data: data.region },
+                  DEVICE_CC_CODE: { Data: "RS" },
+                  MCC_NUM: { Data: "220" },
+                  MNC_NUM: { Data: "01" },
+                }
+              : {}),
         };
   return buildXMLMsg(type, payload);
 };
