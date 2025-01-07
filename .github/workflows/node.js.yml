@@ -46,4 +46,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run script
-        run: node main.mjs -m SM-A236M -r ARO -i 358263681238947
+        run: node main.mjs -m SM-S911B -r EUX -i 352404911234563
