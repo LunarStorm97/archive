@@ -1,49 +1,32 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Node.js CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x, 23.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.1.0
         with:
-          # Version Spec of the version to use in SemVer notation.
-          # It also admits such aliases as lts/*, latest, nightly and canary builds
-          # Examples: 12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly, latest, node
           node-version: ${{ matrix.node-version }}
 
-      # Runs a single command using the runners shell
       - name: Install dependencies
         run: npm install
 
-      # Runs a single command using the runners shell
       - name: Run script
         run: node main.mjs -m SM-S911B -r EUX -i 352404911234563
