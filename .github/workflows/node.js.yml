@@ -22,17 +22,66 @@ jobs:
 
     strategy:
       matrix:
-        region: ["ARO", "BVO", "ZTO", "CHO", "COO", "ICE", "ECO", "TBS", "TGU", "SEM", "TPA", "UPO", "PET", "PCT", "ANC", "VNO"]
-        node-version: ["22.x"]
+        region: 
+          - ARO  # Argentina (Libre)
+          - CTI  # Argentina (Claro)
+          - PSN  # Argentina (Personal)
+          - UFN  # Argentina (Movistar)
+          - BVO  # Bolivia (Libre)
+          - BVT  # Bolivia (Tigo)
+          - ZTO  # Brasil (Libre)
+          - ZTA  # Brasil (Claro)
+          - ZTR  # Brasil (Oi)
+          - ZTM  # Brasil (TIM)
+          - ZVV  # Brasil (Vivo)
+          - CHO  # Chile (Libre)
+          - CHL  # Chile (Claro)
+          - CHE  # Chile (Entel)
+          - CHT  # Chile (Telefónica)
+          - COO  # Colombia (Libre)
+          - COM  # Colombia (Comcel)
+          - COB  # Colombia (Movistar)
+          - ICE  # Costa Rica (ICE/Kölbi)
+          - CRC  # Costa Rica (Claro)
+          - CRM  # Costa Rica (Movistar)
+          - ECO  # Ecuador (Libre)
+          - ALE  # Ecuador (Alegro)
+          - TBS  # El Salvador (Libre)
+          - TGU  # Guatemala (Movistar)
+          - PGU  # Guatemala (Claro)
+          - CGU  # Guatemala (Tigo)
+          - CWW  # Jamaica (Cable & Wireless)
+          - TMM  # México (Movistar)
+          - TCE  # México (Telcel)
+          - IUS  # México (Iusacell)
+          - UNE  # México (Unefon)
+          - SEM  # México (Libre)
+          - TPA  # Panamá (Libre)
+          - CPA  # Panamá (Claro)
+          - PBS  # Panamá (PBS)
+          - CTP  # Paraguay (Claro)
+          - UPO  # Paraguay (Libre)
+          - PET  # Perú (Libre)
+          - SAM  # Perú (SAM)
+          - PNT  # Perú (Nextel)
+          - WP   # Perú (Movistar)
+          - PCT  # Puerto Rico (Libre)
+          - CDR  # República Dominicana (Claro)
+          - DOR  # República Dominicana (Orange)
+          - ANC  # Uruguay (Libre)
+          - CTU  # Uruguay (Claro)
+          - UFU  # Uruguay (Movistar)
+          - VMT  # Venezuela (Movistar)
+          - VNO  # Venezuela (Libre)
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v4.1.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22.x
 
       - name: Install dependencies
         run: |
