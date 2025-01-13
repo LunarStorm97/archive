@@ -5,6 +5,7 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+
   workflow_dispatch:
 
 jobs:
@@ -30,27 +31,14 @@ jobs:
       - name: Run script
         run: |
           node main.mjs -m SM-A236M -r ARO -i 358263681238947
-          sudo apt install tree && tree
 
-      - name: Extract version from filename
-        id: extract_version
-        run: |
-          # Define the filename
-          FILENAME="SM-A236M_ARO/BL*"
-          
-          # Extract version using regex (e.g., "A236MUBS9EXL1")
-          VERSION=$(echo $FILENAME | sed -E 's/BL_([A-Za-z0-9]+)_.*/\1/')
-          
-          # Output the version to be used in the next step
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
       - name: GH Release
-        if: ${{ matrix.node-version == '22.x' }}  # Condición para ejecutar solo en Node 22
+        if: ${{ matrix.node-version == '22.x' }}
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: |
             SM-A236M_ARO/BL*
             SM-A236M_ARO/CP*
-            SM-A236M_ARO/CSC*
-            SM-A236M_ARO/HOME*
-          tag_name: ${{ env.VERSION }}  # Usar la versión extraída como el tag_name
+            SM-A236M_ARO/CSC_OWO*
+            SM-A236M_ARO/HOME_CSC_OWO*
+          tag_name: ${{ github.run_id }}
