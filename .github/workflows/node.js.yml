@@ -22,7 +22,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x]
+        region: ["ARO", "BVO", "ZTO", "CHO", "COO", "ICE", "ECO", "TBS", "TGU", "SEM", "TPA", "UPO", "PET", "PCT", "ANC", "VNO"]
+        node-version: ["22.x"]
 
     steps:
       - name: Checkout
@@ -39,26 +40,26 @@ jobs:
 
       - name: Run script
         run: |
-          node main.mjs -m ${{ inputs.model }} -r ${{ inputs.region }} -i ${{ inputs.imei }}
+          node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
 
       - name: Split large files
         run: |
-          mkdir -p ${{ inputs.model }}_${{ inputs.region }}/split
-          split -b 1024m ${{ inputs.model }}_${{ inputs.region }}/AP* ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_
+          mkdir -p ${{ inputs.model }}_${{ matrix.region }}/split
+          split -b 1024m ${{ inputs.model }}_${{ matrix.region }}/AP* ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_
 
       - name: Get latest firmware version
         run: |
-          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ inputs.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
+          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: |
-            ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_*
-            ${{ inputs.model }}_${{ inputs.region }}/BL*
-            ${{ inputs.model }}_${{ inputs.region }}/CP*
-            ${{ inputs.model }}_${{ inputs.region }}/CSC_OWO*
-            ${{ inputs.model }}_${{ inputs.region }}/HOME_CSC_OWO*
+            ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_*
+            ${{ inputs.model }}_${{ matrix.region }}/BL*
+            ${{ inputs.model }}_${{ matrix.region }}/CP*
+            ${{ inputs.model }}_${{ matrix.region }}/CSC_OWO*
+            ${{ inputs.model }}_${{ matrix.region }}/HOME_CSC_OWO*
           name: ${{ env.LATEST_VERSION }}
-          tag_name: ${{ inputs.model }}_${{ inputs.region }}
+          tag_name: ${{ inputs.model }}_${{ matrix.region }}
