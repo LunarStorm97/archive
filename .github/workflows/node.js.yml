@@ -89,6 +89,7 @@ jobs:
 
       - name: Run script
         run: |
+        continue-on-error: true
           node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
 
       - name: Split large files
