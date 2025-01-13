@@ -2,7 +2,6 @@ name: Node.js CI
 
 on:
   push:
-
   workflow_dispatch:
     inputs:
       model:
@@ -46,7 +45,7 @@ jobs:
         run: |
           mkdir -p ${{ inputs.model }}_${{ inputs.region }}/split
           split -b 2000000000 ${{ inputs.model }}_${{ inputs.region }}/AP* ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_
-        
+
       - name: GH Release
         if: ${{ matrix.node-version == '22.x' }}
         uses: softprops/action-gh-release@v2.2.1
