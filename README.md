@@ -4,7 +4,7 @@ A Node.js script to download firmware for Samsung devices.
 
 ### Requirements
 
-- Node.js version 18.x, 20.x, 22.x or 23.x
+- Node.js version 18.x, 20.x, or 22.x
 - npm (Node Package Manager)
 
 <p><img src="https://raw.githubusercontent.com/nodejs/Release/refs/heads/main/schedule.svg" alt="LTS Schedule"/></p>
