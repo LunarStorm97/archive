@@ -5,6 +5,7 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+
   workflow_dispatch:
 
 jobs:
@@ -31,19 +32,19 @@ jobs:
         run: |
           node main.mjs -m SM-A236M -r ARO -i 358263681238947
 
-      - name: Split large file
+      - name: Split large files
         run: |
-          # Verifica si el archivo es mayor a 2 GB y lo divide en partes
-          if [ -f "SM-A236M_ARO/AP*" ] && [ $(stat -c %s SM-A236M_ARO/AP*) -gt 2147483648 ]; then
-            split -b 1900M SM-A236M_ARO/AP* "SM-A236M_ARO/AP_part_"
-          fi
-
+          # Cambia el nombre del archivo grande y la ubicación si es necesario
+          mkdir -p SM-A236M_ARO/split
+          split -b 1900m SM-A236M_ARO/AP* SM-A236M_ARO/split/AP_part_
+        
       - name: GH Release
         if: ${{ matrix.node-version == '22.x' }}
         uses: softprops/action-gh-release@v2.2.1
         with:
+          # Subir las partes divididas
           files: |
-            SM-A236M_ARO/AP_part_*
+            SM-A236M_ARO/split/AP_part_*
             SM-A236M_ARO/BL*
             SM-A236M_ARO/CP*
             SM-A236M_ARO/CSC_OWO*
