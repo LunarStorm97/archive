@@ -13,7 +13,7 @@ on:
         default: "ARO"
       imei:
         description: "IMEI/Serial Number"
-        required: true
+        required: false
         default: "R5CW312KLVM"
 
 jobs:
@@ -28,25 +28,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
-      - name: Get latest firmware version
-        run: |
-          TAG_NAME=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ inputs.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-
-      - name: Check if tag exists
-        run: |
-          if git rev-parse "refs/tags/$TAG_NAME" >/dev/null 2>&1; then
-            echo "Tag $TAG_NAME already exists. Exiting workflow."
-            exit 0
-          fi
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+
+      - name: Get latest firmware version
+        run: |
+          TAG_NAME=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ inputs.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Check if tag already exists
+        run: |
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME"; then
+            echo "Tag $TAG_NAME already exists. Skipping workflow."
+            exit 0
+          fi
 
       - name: Run script
         run: |
