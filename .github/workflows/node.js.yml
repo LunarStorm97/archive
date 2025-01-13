@@ -32,7 +32,9 @@ jobs:
         run: |
           node main.mjs -m SM-A236M -r ARO -i 358263681238947
           sudo apt install tree && tree
+
       - name: GH Release
+        if: ${{ matrix.node-version == '22.x' }}
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: |
