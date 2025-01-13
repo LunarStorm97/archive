@@ -29,7 +29,8 @@ jobs:
         run: npm install
 
       - name: Run script
-        run: node main.mjs -m SM-A236M -r ARO -i 358263681238947 && sudo apt install tree && tree
+        run: node main.mjs -m SM-A236M -r ARO -i 358263681238947
+             sudo apt install tree && tree
       
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
