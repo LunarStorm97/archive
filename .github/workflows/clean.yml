@@ -1,49 +1,40 @@
-name: Clean Up Repository
+name: Limpiar Repositorio
 
 on:
-  workflow_dispatch:  # Permite ejecutar el workflow manualmente desde la UI de GitHub
+  push:
+    branches:
+      - main
 
 jobs:
-  clean_up:
+  clean:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4.2.2
+    - name: Configurar Git
+      uses: actions/checkout@v2
 
-      - name: Set up Git
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+    - name: Eliminar todos los releases
+      run: |
+        releases=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[].id')
+        for release in $releases; do
+          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/$release"
+        done
 
-      - name: Delete all releases
-        run: |
-          curl -s -H "Authorization: token ${{ GITHUB_TOKEN }}" \
-               "https://api.github.com/repos/${{ github.repository }}/releases" \
-               | jq -r '.[].id' \
-               | while read release_id; do
-                   curl -X DELETE -H "Authorization: token ${{ GITHUB_TOKEN }}" \
-                        "https://api.github.com/repos/${{ github.repository }}/releases/$release_id";
-                 done
-        env:
-          GITHUB_TOKEN: ${{ GITHUB_TOKEN }}
+    - name: Eliminar todos los tags
+      run: |
+        tags=$(git tag)
+        for tag in $tags; do
+          git push --delete origin $tag
+          git tag -d $tag
+        done
 
-      - name: Delete all tags
-        run: |
-          git fetch --tags
-          for tag in $(git tag); do
-            git tag -d $tag
-            git push --delete origin $tag
-          done
-
-      - name: Delete all workflow run logs
-        run: |
-          curl -s -H "Authorization: token ${{ GITHUB_TOKEN }}" \
-               "https://api.github.com/repos/${{ github.repository }}/actions/runs" \
-               | jq -r '.[].id' \
-               | while read run_id; do
-                   curl -X DELETE -H "Authorization: token ${{ GITHUB_TOKEN }}" \
-                        "https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id";
-                 done
-        env:
-          GITHUB_TOKEN: ${{ GITHUB_TOKEN }}
+    - name: Eliminar logs de workflows
+      run: |
+        workflows=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs")
+        for run in $(echo "$workflows" | jq -r '.[].id'); do
+          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs/$run"
+        done
