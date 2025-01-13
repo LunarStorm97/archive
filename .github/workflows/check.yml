@@ -8,23 +8,25 @@ on:
 jobs:
   run_script:
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        part: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  # Dividir en 10 partes
     steps:
-    - name: Chequear código
-      uses: actions/checkout@v4.2.2
+      - name: Chequear código
+        uses: actions/checkout@v4.2.2
+        
+      - name: Instalar dependencias
+        run: |
+          sudo apt update
+          sudo apt install curl
 
-    - name: Instalar dependencias (si es necesario)
-      run: |
-        sudo apt update
-        sudo apt install curl
+      - name: Ejecutar el script
+        run: |
+          chmod +x script.sh
+          ./script.sh ${{ matrix.part }}  # Pasar el número de parte a la variable "part"
 
-    - name: Ejecutar el script
-      run: |
-        chmod +x script.sh  # Asegúrate de que el script tenga permisos de ejecución
-        ./script.sh
-
-    - name: Subir el log como artifact
-      uses: actions/upload-artifact@v4.5.0
-      with:
-        name: firmware-versions-log
-        path: firmware_versions_combinations.log
+      - name: Subir el log como artifact
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: firmware-versions-log-part-${{ matrix.part }}
+          path: firmware_versions_combinations.log
