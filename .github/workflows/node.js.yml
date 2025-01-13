@@ -1,20 +1,13 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
 name: Node.js CI
 
 on:
-  workflow_dispatch:
-    inputs:
-      model:
-        description: "Model"
-        required: true
-        default: "SM-A236M"
-      region:
-        description: "Region"
-        required: true
-        default: "ARO"
-      imei:
-        description: "IMEI/Serial Number"
-        required: false
-        default: "358263681238947"
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   build:
@@ -22,13 +15,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [18.x, 20.x, 22.x, 23.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js environment ${{ matrix.node-version }}
         uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
@@ -37,28 +31,4 @@ jobs:
         run: npm install
 
       - name: Run script
-        run: |
-          node main.mjs -m ${{ inputs.model }} -r ${{ inputs.region }} -i ${{ inputs.imei }}
-
-      - name: Split large files
-        run: |
-          mkdir -p ${{ inputs.model }}_${{ inputs.region }}/split
-          split -b 1024m ${{ inputs.model }}_${{ inputs.region }}/AP* ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_
-
-      - name: Get latest firmware version
-        id: get_version
-        run: |
-          TAG_NAME=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ inputs.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-
-      - name: GH Release
-        if: ${{ (git ls-remote --tags origin | grep "refs/tags/${{ env.TAG_NAME }}" | wc -l) == 0 }}
-        uses: softprops/action-gh-release@v2.2.1
-        with:
-           files: |
-              ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_*
-              ${{ inputs.model }}_${{ inputs.region }}/BL*
-              ${{ inputs.model }}_${{ inputs.region }}/CP*
-              ${{ inputs.model }}_${{ inputs.region }}/CSC_OWO*
-              ${{ inputs.model }}_${{ inputs.region }}/HOME_CSC_OWO*
-           tag_name: ${{ env.TAG_NAME }}
+        run: node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
