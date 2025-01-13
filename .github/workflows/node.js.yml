@@ -2,11 +2,21 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
   workflow_dispatch:
+    inputs:
+      model:
+        description: "Model"
+        required: true
+        default: "SM-A236M"
+      region:
+        description: "Region"
+        required: true
+        default: "ARO"
+      imei:
+        description: "IMEI/Serial Number"
+        required: false
+        default: "358263681238947"
 
 jobs:
   build:
@@ -30,23 +40,21 @@ jobs:
 
       - name: Run script
         run: |
-          node main.mjs -m SM-A236M -r ARO -i 358263681238947
+          node main.mjs -m ${{ inputs.model }} -r ${{ inputs.region }} -i ${{ inputs.imei }}
 
       - name: Split large files
         run: |
-          # Cambia el nombre del archivo grande y la ubicación si es necesario
-          mkdir -p SM-A236M_ARO/split
-          split -b 2000000000 SM-A236M_ARO/AP* SM-A236M_ARO/split/AP_part_
+          mkdir -p ${{ inputs.model }}_${{ inputs.region }}/split
+          split -b 2000000000 ${{ inputs.model }}_${{ inputs.region }}/AP* ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_
         
       - name: GH Release
         if: ${{ matrix.node-version == '22.x' }}
         uses: softprops/action-gh-release@v2.2.1
         with:
-          # Subir las partes divididas
           files: |
-            SM-A236M_ARO/split/AP_part_*
-            SM-A236M_ARO/BL*
-            SM-A236M_ARO/CP*
-            SM-A236M_ARO/CSC_OWO*
-            SM-A236M_ARO/HOME_CSC_OWO*
+            ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_*
+            ${{ inputs.model }}_${{ inputs.region }}/BL*
+            ${{ inputs.model }}_${{ inputs.region }}/CP*
+            ${{ inputs.model }}_${{ inputs.region }}/CSC_OWO*
+            ${{ inputs.model }}_${{ inputs.region }}/HOME_CSC_OWO*
           tag_name: ${{ github.run_id }}
