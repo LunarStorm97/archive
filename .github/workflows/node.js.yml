@@ -48,8 +48,8 @@ jobs:
 
       - name: Get latest firmware version
         run: |
-          TAG_NAME=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ inputs.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ inputs.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
+          echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
@@ -60,4 +60,5 @@ jobs:
             ${{ inputs.model }}_${{ inputs.region }}/CP*
             ${{ inputs.model }}_${{ inputs.region }}/CSC_OWO*
             ${{ inputs.model }}_${{ inputs.region }}/HOME_CSC_OWO*
-          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ env.LATEST_VERSION }}
+          tag_name: ${{ inputs.model }}_${{ inputs.region }}
