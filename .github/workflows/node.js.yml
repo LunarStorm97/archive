@@ -44,7 +44,7 @@ jobs:
       - name: Split large files
         run: |
           mkdir -p ${{ inputs.model }}_${{ inputs.region }}/split
-          split -b 2000000000 ${{ inputs.model }}_${{ inputs.region }}/AP* ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_
+          split -b 1024m ${{ inputs.model }}_${{ inputs.region }}/AP* ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_
 
       - name: GH Release
         if: ${{ matrix.node-version == '22.x' }}
