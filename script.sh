@@ -18,16 +18,18 @@ generate_combinations() {
     done
 }
 
-# Determinar el rango de combinaciones basado en la parte
+# Total de combinaciones
 total_combinations=17576  # Total de combinaciones (26^3)
-combinations_per_part=$((total_combinations / 10))  # Aproximadamente 1,757 combinaciones por parte
+
+# Número de combinaciones por parte (aproximadamente 150)
+combinations_per_part=150
 
 # Calcular el rango de combinaciones para esta parte
 start=$(((part - 1) * combinations_per_part))
 end=$((part * combinations_per_part - 1))
 
 # Asegurarse de que la última parte cubra hasta el final
-if [ "$part" -eq 10 ]; then
+if [ "$part" -eq 117 ]; then
     end=$((total_combinations - 1))
 fi
 
