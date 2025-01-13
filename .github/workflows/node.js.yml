@@ -22,7 +22,7 @@ jobs:
 
     strategy:
       matrix:
-        region: ["ARO", "ZTO", "CHO", "TPA", "UPO", "VNO"]
+        region: ["ARO", "ZTO", "CHO", "TPA"]
         node-version: ["22.x"]
 
     steps:
