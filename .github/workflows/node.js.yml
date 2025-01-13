@@ -2,6 +2,19 @@ name: Node.js CI
 
 on:
   workflow_dispatch:
+    inputs:
+      model:
+        description: "Model"
+        required: true
+        default: "SM-A236M"
+      region:
+        description: "Region"
+        required: true
+        default: "ARO"
+      imei:
+        description: "IMEI/Serial Number"
+        required: true
+        default: "358263681238947"
 
 jobs:
   build:
@@ -9,8 +22,6 @@ jobs:
 
     strategy:
       matrix:
-        imei: ["R5CW312KLVM"]
-        model: ["SM-A236M"]
         node-version: ["22.x"]
         region: ["ARO", "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
 
@@ -29,26 +40,26 @@ jobs:
 
       - name: Run script
         run: |
-          node main.mjs -m ${{ matrix.model }} -r ${{ matrix.region }} -i ${{ matrix.imei }}
+          node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
 
       - name: Split large files
         run: |
-          mkdir -p ${{ matrix.model }}_${{ matrix.region }}/split
-          split -b 1024m ${{ matrix.model }}_${{ matrix.region }}/AP* ${{ matrix.model }}_${{ matrix.region }}/split/AP_part_
+          mkdir -p ${{ inputs.model }}_${{ matrix.region }}/split
+          split -b 1024m ${{ inputs.model }}_${{ matrix.region }}/AP* ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_
 
       - name: Get latest firmware version
         run: |
-          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ matrix.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
+          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: |
-            ${{ matrix.model }}_${{ matrix.region }}/split/AP_part_*
-            ${{ matrix.model }}_${{ matrix.region }}/BL*
-            ${{ matrix.model }}_${{ matrix.region }}/CP*
-            ${{ matrix.model }}_${{ matrix.region }}/CSC_OWO*
-            ${{ matrix.model }}_${{ matrix.region }}/HOME_CSC_OWO*
+            ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_*
+            ${{ inputs.model }}_${{ matrix.region }}/BL*
+            ${{ inputs.model }}_${{ matrix.region }}/CP*
+            ${{ inputs.model }}_${{ matrix.region }}/CSC_OWO*
+            ${{ inputs.model }}_${{ matrix.region }}/HOME_CSC_OWO*
           name: ${{ env.LATEST_VERSION }}
-          tag_name: ${{ matrix.model }}_${{ matrix.region }}
+          tag_name: ${{ inputs.model }}_${{ matrix.region }}
