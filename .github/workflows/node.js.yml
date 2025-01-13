@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         node-version: ["22.x"]
-        region: ["ARO", "ZTO", "CHO", "GTO", "TPA"]
+        region: ["ARO", "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
 
     steps:
       - name: Checkout
