@@ -36,7 +36,7 @@ jobs:
         run: |
           # Cambia el nombre del archivo grande y la ubicación si es necesario
           mkdir -p SM-A236M_ARO/split
-          split -b 2g SM-A236M_ARO/AP* SM-A236M_ARO/split/AP_part_
+          split -b 2000000000 SM-A236M_ARO/AP* SM-A236M_ARO/split/AP_part_
         
       - name: GH Release
         if: ${{ matrix.node-version == '22.x' }}
