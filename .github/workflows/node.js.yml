@@ -94,11 +94,13 @@ jobs:
 
       - name: Split large files
         run: |
+        continue-on-error: true
           mkdir -p ${{ inputs.model }}_${{ matrix.region }}/split
           split -b 1024m ${{ inputs.model }}_${{ matrix.region }}/AP* ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_
 
       - name: Get latest firmware version
         run: |
+        continue-on-error: true
           LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
