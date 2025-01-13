@@ -52,13 +52,13 @@ jobs:
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
       - name: GH Release
-        if: ${{ !contains(git ls-remote --tags origin, "refs/tags/${{ env.TAG_NAME }}") }}
+        if: ${{ (git ls-remote --tags origin | grep "refs/tags/${{ env.TAG_NAME }}" | wc -l) == 0 }}
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: |
-            ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_*
-            ${{ inputs.model }}_${{ inputs.region }}/BL*
-            ${{ inputs.model }}_${{ inputs.region }}/CP*
-            ${{ inputs.model }}_${{ inputs.region }}/CSC_OWO*
-            ${{ inputs.model }}_${{ inputs.region }}/HOME_CSC_OWO*
-          tag_name: ${{ env.TAG_NAME }}
+           files: |
+              ${{ inputs.model }}_${{ inputs.region }}/split/AP_part_*
+              ${{ inputs.model }}_${{ inputs.region }}/BL*
+              ${{ inputs.model }}_${{ inputs.region }}/CP*
+              ${{ inputs.model }}_${{ inputs.region }}/CSC_OWO*
+              ${{ inputs.model }}_${{ inputs.region }}/HOME_CSC_OWO*
+           tag_name: ${{ env.TAG_NAME }}
