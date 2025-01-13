@@ -22,8 +22,8 @@ jobs:
 
     strategy:
       matrix:
-        region: ["ARO", "ZTO", "CHO", "TPA"]
         node-version: ["22.x"]
+        region: ["ARO", "ZTO", "CHO", "GTO", "TPA"]
 
     steps:
       - name: Checkout
