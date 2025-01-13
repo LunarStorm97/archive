@@ -12,29 +12,5 @@ jobs:
     steps:
     - name: Configurar Git
       uses: actions/checkout@v2
-
-    - name: Eliminar todos los releases
-      run: |
-        releases=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[].id')
-        for release in $releases; do
-          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/$release"
-        done
-
-    - name: Eliminar todos los tags
-      run: |
-        tags=$(git tag)
-        for tag in $tags; do
-          git push --delete origin $tag
-          git tag -d $tag
-        done
-
-    - name: Eliminar logs de workflows
-      run: |
-        workflows=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/runs")
-        for run in $(echo "$workflows" | jq -r '.[].id'); do
-          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs/$run"
-        done
+    - name: Delete Releases
+      uses: sgpublic/delete-release-action@v1.2
