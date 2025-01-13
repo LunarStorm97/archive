@@ -51,6 +51,14 @@ jobs:
           TAG_NAME=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ inputs.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git ls-remote --tags origin | grep -q "refs/tags/${{ env.TAG_NAME }}"; then
+            echo "Tag ${{ env.TAG_NAME }} already exists. Skipping release."
+            exit 0
+          fi
+
       - name: GH Release
         if: ${{ matrix.node-version == '22.x' }}
         uses: softprops/action-gh-release@v2.2.1
