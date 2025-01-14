@@ -7,14 +7,10 @@ on:
         description: "Model"
         required: true
         default: "SM-A236M"
-      region:
-        description: "Region"
-        required: true
-        default: "ARO"
       imei:
         description: "IMEI/Serial Number"
         required: true
-        default: "358263681238947"
+        default: "R5CW312KLVM"
 
 jobs:
   build:
@@ -22,11 +18,8 @@ jobs:
 
     strategy:
       matrix:
-        region:
-          [
-            "ARO", "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO",
-            "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"
-          ]
+        node-version: ["22.x"]
+        region: ["ARO", "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
 
     steps:
       - name: Checkout
@@ -35,13 +28,15 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.1.0
         with:
-          node-version: "22.x"
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
 
       - name: Run script
-        run: node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
+        run: |
+          node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
 
       - name: Split large files
         run: |
@@ -51,27 +46,11 @@ jobs:
           done
 
       - name: Get latest firmware version
-        id: get_latest_version
         run: |
           LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
-      - name: Check if release exists using curl (no API)
-        run: |
-          repo_url="https://github.com/LunarStorm97/samsung-firmware/releases"
-          release_page=$(curl -s "$repo_url")
-
-          # Verifica si el tag y la versión están en la página
-          if echo "$release_page" | grep -q "SM-A236M_CHL.*A236MUBS8EXJ1"; then
-            echo "Release with tag SM-A236M_CHL and version A236MUBS8EXJ1 already exists."
-            echo "release_exists=true" >> $GITHUB_ENV
-          else
-            echo "No matching release found or version mismatch."
-            echo "release_exists=false" >> $GITHUB_ENV
-          fi  # Faltaba cerrar correctamente el bloque `if`
-
       - name: GH Release
-        if: env.release_exists == 'false'
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: |
