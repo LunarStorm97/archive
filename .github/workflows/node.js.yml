@@ -64,7 +64,7 @@ jobs:
       - name: Split large files
         run: |
           for file in ${{ inputs.model }}_${{ matrix.region }}/AP*; do
-          split -b 2147483648 "$file" "${file}_part_"
+          split -b 1024m "$file" "${file}_part_"
           rm "$file"
           done
 
