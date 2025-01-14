@@ -66,6 +66,16 @@ jobs:
           mkdir -p ${{ inputs.model }}_${{ matrix.region }}/split
           split -b 1024m ${{ inputs.model }}_${{ matrix.region }}/AP* ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_
 
+      - name: Verify MD5 before splitting
+        run: |
+          md5sum ${{ inputs.model }}_${{ matrix.region }}/AP* > ${{ inputs.model }}_${{ matrix.region }}/original.md5
+
+      - name: Combine files and verify MD5 after splitting
+        run: |
+          cat ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_* > ${{ inputs.model }}_${{ matrix.region }}/AP_combined
+          md5sum ${{ inputs.model }}_${{ matrix.region }}/AP_combined > ${{ inputs.model }}_${{ matrix.region }}/combined.md5
+          diff ${{ inputs.model }}_${{ matrix.region }}/original.md5 ${{ inputs.model }}_${{ matrix.region }}/combined.md5 || echo "MD5 hash does not match!"
+
       - name: Get latest firmware version
         run: |
           LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
