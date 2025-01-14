@@ -56,11 +56,13 @@ jobs:
           LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
-      - name: Check if release exists
-        id: check_release
+      - name: Check if release exists using curl (no API)
         run: |
-          release_info=$(gh release view ${{ inputs.model }}_${{ matrix.region }} --json name --jq ".name" || echo "not_found")
-          if [ "$release_info" == "${{ env.LATEST_VERSION }}" ]; then
+          repo_url="https://github.com/${{ github.repository }}/releases"
+          release_page=$(curl -s "$repo_url")
+
+          # Verifica si el tag y la versión están en la página
+          if echo "$release_page" | grep -q "${{ inputs.model }}_${{ matrix.region }}.*${{ env.LATEST_VERSION }}"; then
             echo "Release with tag ${{ inputs.model }}_${{ matrix.region }} and version ${{ env.LATEST_VERSION }} already exists."
             echo "release_exists=true" >> $GITHUB_ENV
           else
