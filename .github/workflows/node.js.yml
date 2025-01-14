@@ -64,17 +64,9 @@ jobs:
       - name: Split large files
         run: |
           mkdir -p ${{ inputs.model }}_${{ matrix.region }}/split
-          split -b 1024m ${{ inputs.model }}_${{ matrix.region }}/AP* ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_
-
-      - name: Verify MD5 before splitting
-        run: |
-          md5sum ${{ inputs.model }}_${{ matrix.region }}/AP* > ${{ inputs.model }}_${{ matrix.region }}/original.md5
-
-      - name: Combine files and verify MD5 after splitting
-        run: |
-          cat ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_* > ${{ inputs.model }}_${{ matrix.region }}/AP_combined
-          md5sum ${{ inputs.model }}_${{ matrix.region }}/AP_combined > ${{ inputs.model }}_${{ matrix.region }}/combined.md5
-          diff ${{ inputs.model }}_${{ matrix.region }}/original.md5 ${{ inputs.model }}_${{ matrix.region }}/combined.md5 || echo "MD5 hash does not match!"
+          for file in ${{ inputs.model }}_${{ matrix.region }}/AP*; do
+          split -b 1024m "$file" "${file}_part_"
+          done
 
       - name: Get latest firmware version
         run: |
@@ -85,10 +77,7 @@ jobs:
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: |
-            ${{ inputs.model }}_${{ matrix.region }}/split/AP_part_*
-            ${{ inputs.model }}_${{ matrix.region }}/BL*
-            ${{ inputs.model }}_${{ matrix.region }}/CP*
-            ${{ inputs.model }}_${{ matrix.region }}/CSC_OWO*
-            ${{ inputs.model }}_${{ matrix.region }}/HOME_CSC_OWO*
+            ${{ inputs.model }}_${{ matrix.region }}/split/AP*
+            ${{ inputs.model }}_${{ matrix.region }}/*
           name: ${{ env.LATEST_VERSION }}
           tag_name: ${{ inputs.model }}_${{ matrix.region }}
