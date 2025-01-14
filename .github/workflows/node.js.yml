@@ -58,16 +58,17 @@ jobs:
 
       - name: Check if release exists using curl (no API)
         run: |
-          repo_url="https://github.com/${{ github.repository }}/releases"
+          repo_url="https://github.com/LunarStorm97/samsung-firmware/releases"
           release_page=$(curl -s "$repo_url")
 
           # Verifica si el tag y la versión están en la página
-          if echo "$release_page" | grep -q "${{ inputs.model }}_${{ matrix.region }}.*${{ env.LATEST_VERSION }}"; then
-            echo "Release with tag ${{ inputs.model }}_${{ matrix.region }} and version ${{ env.LATEST_VERSION }} already exists."
+          if echo "$release_page" | grep -q "SM-A236M_CHL.*A236MUBS8EXJ1"; then
+            echo "Release with tag SM-A236M_CHL and version A236MUBS8EXJ1 already exists."
             echo "release_exists=true" >> $GITHUB_ENV
           else
             echo "No matching release found or version mismatch."
             echo "release_exists=false" >> $GITHUB_ENV
+          fi  # Faltaba cerrar correctamente el bloque `if`
 
       - name: GH Release
         if: env.release_exists == 'false'
