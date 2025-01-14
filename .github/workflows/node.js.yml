@@ -63,9 +63,9 @@ jobs:
 
       - name: Split large files
         run: |
-          mkdir -p ${{ inputs.model }}_${{ matrix.region }}/split
           for file in ${{ inputs.model }}_${{ matrix.region }}/AP*; do
           split -b 1024m "$file" "${file}_part_"
+          rm "$file"
           done
 
       - name: Get latest firmware version
