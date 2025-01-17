@@ -19,24 +19,22 @@ jobs:
     strategy:
       matrix:
         node-version: ["22.x"]
-        region: ["ARO", "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
+        region: ["ARO", "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO","PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js environment
         uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
 
       - name: Run script
-        run: |
-          node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
+        run: node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
 
       - name: Split large files
         run: |
@@ -53,7 +51,6 @@ jobs:
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: |
-            ${{ inputs.model }}_${{ matrix.region }}/*
+          files: ${{ inputs.model }}_${{ matrix.region }}/*
           name: ${{ env.latest }}
           tag_name: ${{ inputs.model }}_${{ matrix.region }}
