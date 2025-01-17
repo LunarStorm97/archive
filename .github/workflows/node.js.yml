@@ -2,10 +2,15 @@ name: Node.js CI
 
 on:
   workflow_dispatch:
-
-env:
-  model: "SM-A236M"
-  imei: "R5CW312KLVM"
+    inputs:
+      model:
+        description: "Model"
+        required: true
+        default: "SM-A236M"
+      imei:
+        description: "IMEI/Serial Number"
+        required: true
+        default: "R5CW312KLVM"
 
 jobs:
   build:
@@ -31,24 +36,24 @@ jobs:
 
       - name: Run script
         run: |
-          node main.mjs -m $model -r ${{ matrix.region }} -i $imei
+          node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
 
       - name: Split large files
         run: |
-          for file in ${model}_${{ matrix.region }}/AP*; do
+          for file in ${{ inputs.model }}_${{ matrix.region }}/AP*; do
             split -b 1024m "$file" "${file}_part_"
             rm "$file"
           done
 
       - name: Get latest firmware version
         run: |
-          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${model}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
+          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: |
-            ${model}_${{ matrix.region }}/*
+            ${{ inputs.model }}_${{ matrix.region }}/*
           name: ${{ env.LATEST_VERSION }}
-          tag_name: ${model}_${{ matrix.region }}
+          tag_name: ${{ inputs.model }}_${{ matrix.region }}
