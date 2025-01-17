@@ -18,36 +18,17 @@ jobs:
 
     strategy:
       matrix:
-        region:
-          [
-            "ARO",
-            "CGU",
-            "CHE",
-            "CHL",
-            "CHO",
-            "CHT",
-            "CHX",
-            "CTI",
-            "GLO",
-            "GTO",
-            "PGU",
-            "PSN",
-            "TPA",
-            "UFN",
-            "ZTA",
-            "ZTM",
-            "ZTO",
-            "ZVV",
-          ]
+        node-version: ["22.x"]
+        region: ["ARO", "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
-      - name: Setup Node.js environment
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.1.0
         with:
-          node-version: 22.x
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: npm install
@@ -64,12 +45,12 @@ jobs:
 
       - name: Get latest firmware version
         run: |
-          latest=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
-          echo "latest=$latest" >> $GITHUB_ENV
+          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
+          echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: ${{ inputs.model }}_${{ matrix.region }}/*
-          name: ${{ env.latest }}
+          name: ${{ env.LATEST_VERSION }}
           tag_name: ${{ inputs.model }}_${{ matrix.region }}
