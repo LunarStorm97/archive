@@ -233,24 +233,23 @@ const downloadFirmware = async (model, region, imei, latestFirmware) => {
 
   let downloadedSize = 0;
   let lastProgress = 0;
+  const startTime = Date.now();
 
   res.data
     .on("data", (buffer) => {
       downloadedSize += buffer.length;
-      const downloadedGB = (downloadedSize / (1024 * 1024 * 1024)).toFixed(2);
-      const totalSizeInGB = (
-        binaryInfo.binaryByteSize /
-        (1024 * 1024 * 1024)
-      ).toFixed(2);
-      const progress = ((downloadedGB / totalSizeInGB) * 100).toFixed(2);
+      const downloadedMB = (downloadedSize / (1024 * 1024)).toFixed(2);
+      const totalSizeInMB = (binaryInfo.binaryByteSize / (1024 * 1024)).toFixed(2);
+      const percentage = ((downloadedSize / binaryInfo.binaryByteSize) * 100).toFixed(2);
+      const speedMB = (downloadedSize / (1024 * 1024) / ((Date.now() - startTime) / 1000)).toFixed(2); // Calcula la velocidad de descarga
+      const eta = ((binaryInfo.binaryByteSize - downloadedSize) / (downloadedSize / (Date.now() - startTime) / 1000)).toFixed(0); // Estima el tiempo restante
 
-      if (progress !== lastProgress) {
-        process.stdout.write(
-          chalk.cyan(
-            `Downloading ${downloadedGB} / ${totalSizeInGB} GB = ${progress}%\r`,
-          ),
-        );
-        lastProgress = progress;
+      // Barra de progreso
+      const progressBar = `${percentage}% [${"=".repeat(Math.floor((downloadedSize / binaryInfo.binaryByteSize) * 20))}${" ".repeat(20 - Math.floor((downloadedSize / binaryByteSize) * 20))}] ${downloadedMB} MB ${speedMB} MB/s eta ${eta}s`;
+
+      if (percentage !== lastProgress) {
+        process.stdout.write(chalk.cyan(progressBar + '\r'));
+        lastProgress = percentage;
       }
     })
     .pipe(binaryDecipher)
