@@ -1,9 +1,30 @@
-name: CI
-on: [push]
+name: Ejecutar script y subir log como artifact
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  build:
+  run_script:
     runs-on: ubuntu-latest
+    
     steps:
-    - uses: actions/checkout@v4.2.2
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3.19
+    - name: Chequear código
+      uses: actions/checkout@v4.2.2
+
+    - name: Instalar dependencias (si es necesario)
+      run: |
+        sudo apt update
+        sudo apt install curl
+
+    - name: Ejecutar el script
+      run: |
+        chmod +x script.sh  # Asegúrate de que el script tenga permisos de ejecución
+        ./script.sh
+
+    - name: Subir el log como artifact
+      uses: actions/upload-artifact@v4.6.0
+      with:
+        name: firmware-versions-log
+        path: firmware_versions_combinations.log
