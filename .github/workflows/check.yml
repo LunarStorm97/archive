@@ -26,7 +26,7 @@ jobs:
           ./script.sh ${{ matrix.part }}  # Pasar el número de parte a la variable "part"
 
       - name: Subir el log como artifact
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: firmware-versions-log-part-${{ matrix.part }}
           path: firmware_versions_combinations.log
