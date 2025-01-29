@@ -11,6 +11,6 @@ jobs:
 
     steps:
     - name: Configurar Git
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Delete Releases
       uses: sgpublic/delete-release-action@v1.2

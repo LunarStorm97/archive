@@ -11,7 +11,7 @@ jobs:
     
     steps:
     - name: Chequear código
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v4
 
     - name: Instalar dependencias (si es necesario)
       run: |
