@@ -45,7 +45,7 @@ jobs:
 
       - name: Get latest firmware version
         run: |
-          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml" | grep -oP '(?<=<latest o="\d{02}">)[^/]+')
+          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml" | grep -oP '<latest[^>]*>\K[^<]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
       - name: GH Release
