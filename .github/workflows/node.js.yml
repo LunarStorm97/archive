@@ -2,24 +2,10 @@ name: Node.js CI
 
 on:
   workflow_dispatch:
-    inputs:
-      model:
-        description: "Model"
-        required: true
-        default: "SM-A236M"
-      imei:
-        description: "IMEI/Serial Number"
-        required: true
-        default: "R5CW312KLVM"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: ["22.x"]
-        region: ["ARO"] # , "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
 
     steps:
       - name: Checkout
@@ -28,29 +14,29 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "22.x"
 
       - name: Install dependencies
         run: npm install
 
       - name: Run script
-        run: node main.mjs -m ${{ inputs.model }} -r ${{ matrix.region }} -i ${{ inputs.imei }}
+        run: node main.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 
       - name: Split large files
         run: |
-          for file in ${{ inputs.model }}_${{ matrix.region }}/AP*; do
+          for file in SM-A236M_ARO/AP*; do
             split -b 1024m "$file" "${file}_part_"
             rm "$file"
           done
 
       - name: Get latest firmware version
         run: |
-          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/${{ matrix.region }}/${{ inputs.model }}/version.xml" | grep -oP '<latest[^>]*>\K[^<]+')
+          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml" | grep -oP '<latest[^>]*>\K[^<]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: ${{ inputs.model }}_${{ matrix.region }}/*
+          files: SM-A236M_ARO/*
           name: ${{ env.LATEST_VERSION }}
           tag_name: ${{ env.LATEST_VERSION }}
