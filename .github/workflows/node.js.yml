@@ -53,4 +53,4 @@ jobs:
         with:
           files: ${{ inputs.model }}_${{ matrix.region }}/*
           name: ${{ env.LATEST_VERSION }}
-          tag_name: ${{ inputs.model }}_${{ matrix.region }}_${{ env.LATEST_VERSION }}
+          tag_name: ${{ env.LATEST_VERSION }}
