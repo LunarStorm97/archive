@@ -19,14 +19,14 @@ jobs:
     strategy:
       matrix:
         node-version: ["22.x"]
-        region: ["ARO", "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
+        region: ["ARO"] # , "CGU", "CHE", "CHL", "CHO", "CHT", "CHX", "CTI", "GLO", "GTO", "PGU", "PSN", "TPA", "UFN", "ZTA", "ZTM", "ZTO", "ZVV"]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -53,4 +53,4 @@ jobs:
         with:
           files: ${{ inputs.model }}_${{ matrix.region }}/*
           name: ${{ env.LATEST_VERSION }}
-          tag_name: ${{ inputs.model }}_${{ matrix.region }}
+          tag_name: ${{ inputs.model }}_${{ matrix.region }}_${{ env.LATEST_VERSION }}
