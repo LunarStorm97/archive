@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
         with:
-          node-version: "22.x"
+          node-version: 22.x
 
       - name: Install dependencies
         run: npm install
@@ -27,8 +27,8 @@ jobs:
       - name: Split large files
         run: |
           for file in SM-A236M_ARO/AP*; do
-            split -b 1024m "$file" "${file}_part_"
-            rm "$file"
+            split -b 1024m $file ${file}_part_
+            rm $file
           done
 
       - name: Get latest firmware version
