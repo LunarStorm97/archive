@@ -33,8 +33,8 @@ jobs:
 
       - name: Get latest firmware version
         run: |
-          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml" | grep -oP '<latest[^>]*>\K[^<]+')
-          echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
+          LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml | grep -oP '<latest[^>]*>\K[^<]+')
+          echo LATEST_VERSION=$LATEST_VERSION >> $GITHUB_ENV
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
