@@ -24,7 +24,7 @@ jobs:
         uses: softprops/action-gh-release@v2.2.1  
         with:  
           body: |  
-            DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}  
-          files: $(basename ${{ github.event.inputs.DOWNLOAD_URL }})  
-          name: ${{ github.event.inputs.DEVICE_CODENAME }}-${{ github.run_id }}  
+            DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}
+          files: ${{ github.event.inputs.DOWNLOAD_URL | basename }}
+          name: ${{ github.event.inputs.DEVICE_CODENAME }}-${{ github.run_id }}
           tag_name: ${{ github.run_id }}
