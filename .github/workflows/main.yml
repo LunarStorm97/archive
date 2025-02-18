@@ -18,9 +18,23 @@ jobs:
           FILE_NAME=$(basename "${{ github.event.inputs.DOWNLOAD_URL }}")
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
+      - name: Split large file if needed
+        run: |
+          FILE_SIZE=$(stat -c%s "${{ env.FILE_NAME }}")
+          echo "File size: $FILE_SIZE bytes"
+          # 2GB = 2147483648 bytes
+          if [ "$FILE_SIZE" -ge 2147483648 ]; then
+            echo "El archivo pesa 2GB o más. Dividiendo en partes de 1024m..."
+            split -b 1024m "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
+            rm "${{ env.FILE_NAME }}"
+          else
+            echo "El archivo es menor a 2GB. No se requiere división."
+          fi
+
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: ${{ env.FILE_NAME }}
+          # Si el archivo se dividió, se subirán todas las partes
+          files: ${{ env.FILE_NAME }}*
           name: ${{ env.FILE_NAME }}
           tag_name: ${{ env.FILE_NAME }}
