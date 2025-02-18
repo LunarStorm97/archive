@@ -6,7 +6,7 @@ on:
       DOWNLOAD_URL:  
         description: "DOWNLOAD_URL"  
         required: true  
-        default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp"  
+        default: "https://software.download.prss.microsoft.com/dbazure/Win8.1_SingleLang_Spanish_x32.iso?t=ebe18590-23cc-4938-8124-daa07732895d&P1=1739985282&P2=601&P3=2&P4=kTiSgAaCtIJfMezjZSGBpMIvSgtLUcgsCAS2rxx3QSAnRjV3Jw%2b5pUtBPFWluSmafhHY9%2bi%2f9sZul36WaHZltpigJM7ZhnoUhzZPiBFFaYyqIM9n2BOxasxpNvW1DZNuLUiwANjZCv1GZ7Eb2P%2fKrTz%2f0nTejVAjfKtgIPNrTWmxjJtiPZWuBQvd5ROCIDp5B4DMKCUVmpMMLVL8zWcV6GTH39cOrxmq%2bwZUGBRryBSMA08oj6aDTUCW0RpHkQ0TMkF1OoK5vdzzWfU5mt6Bm6jvVsrRJx%2flgSaXar19f7B9%2bYpIKCtgKsxSSc9m9kPcDhAGz7jq7xgPm22f05lgaA%3d%3d"
 
 jobs:  
   release:  
@@ -32,5 +32,5 @@ jobs:
           body: |  
             DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}  
           files: /mnt/workspace/*  
-          name: ${{ github.event.inputs.DOWNLOAD_URL | basename | sed 's/\.[^.]*$//' }}
-          tag_name: ${{ github.event.inputs.DOWNLOAD_URL | basename | sed 's/\.[^.]*$//' }}
+          name: ${{ github.event.inputs.DOWNLOAD_URL | split('?')[0] | basename | split('.')[0] }}-${{ github.run_id }}  
+          tag_name: ${{ github.event.inputs.DOWNLOAD_URL | split('?')[0] | basename | split('.')[0] }}-${{ github.run_id }}
