@@ -28,6 +28,6 @@ jobs:
         with:
           body: |
             DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}
-          files: /mnt/workspace/*
+          files: /mnt/workspace/${{ env.FILE_NAME }}
           name: ${{ env.FILE_NAME }}
           tag_name: ${{ env.FILE_NAME }}
