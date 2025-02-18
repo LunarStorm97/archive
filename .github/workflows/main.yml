@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       DOWNLOAD_URL:
-        description: "DOWNLOAD URL"
+        description: 'DOWNLOAD URL'
+        default: 'https://ash-speed.hetzner.com/100MB.bin'
         required: true
-        default: "https://ash-speed.hetzner.com/100MB.bin"
 
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
       - name: Download file
         run: |
           wget "${{ github.event.inputs.DOWNLOAD_URL }}"
-          FILE_NAME=$(basename ${{ github.event.inputs.DOWNLOAD_URL }})
+          FILE_NAME=$(basename "${{ github.event.inputs.DOWNLOAD_URL }}")
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
       - name: GH Release
