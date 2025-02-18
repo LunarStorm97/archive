@@ -1,36 +1,44 @@
 name: Upload to Release
 
-on:  
-  workflow_dispatch:  
-    inputs:  
-      DOWNLOAD_URL:  
-        description: "DOWNLOAD_URL"  
-        required: true  
-        default: "https://software.download.prss.microsoft.com/dbazure/Win8.1_SingleLang_Spanish_x32.iso?t=ebe18590-23cc-4938-8124-daa07732895d&P1=1739985282&P2=601&P3=2&P4=kTiSgAaCtIJfMezjZSGBpMIvSgtLUcgsCAS2rxx3QSAnRjV3Jw%2b5pUtBPFWluSmafhHY9%2bi%2f9sZul36WaHZltpigJM7ZhnoUhzZPiBFFaYyqIM9n2BOxasxpNvW1DZNuLUiwANjZCv1GZ7Eb2P%2fKrTz%2f0nTejVAjfKtgIPNrTWmxjJtiPZWuBQvd5ROCIDp5B4DMKCUVmpMMLVL8zWcV6GTH39cOrxmq%2bwZUGBRryBSMA08oj6aDTUCW0RpHkQ0TMkF1OoK5vdzzWfU5mt6Bm6jvVsrRJx%2flgSaXar19f7B9%2bYpIKCtgKsxSSc9m9kPcDhAGz7jq7xgPm22f05lgaA%3d%3d"
+on:
+  workflow_dispatch:
+    inputs:
+      DOWNLOAD_URL:
+        description: "URL desde la que se descargará el archivo"
+        required: true
+        default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp"
 
-jobs:  
-  release:  
-    runs-on: ubuntu-latest  
-    steps:  
-      - name: Display run parameters  
-        run: |  
-          echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"  
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Se hace checkout del repositorio actual para poder trabajar con él
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Prepare environment  
-        run: |  
-          sudo mkdir -p /mnt/workspace  
-          sudo chown $USER:$USER /mnt/workspace  
+      - name: Display run parameters
+        run: echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"
 
-      - name: Build recovery  
-        run: |  
-          wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }}  
-        working-directory: /mnt/workspace  
+      - name: Prepare environment
+        run: |
+          sudo mkdir -p /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
 
-      - name: GH Release  
-        uses: softprops/action-gh-release@v2.2.1  
-        with:  
-          body: |  
-            DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}  
-          files: /mnt/workspace/*  
-          name: ${{ github.event.inputs.DOWNLOAD_URL | split('?')[0] | basename | split('.')[0] }}-${{ github.run_id }}  
-          tag_name: ${{ github.event.inputs.DOWNLOAD_URL | split('?')[0] | basename | split('.')[0] }}-${{ github.run_id }}
+      - name: Download file
+        run: |
+          wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }}
+        working-directory: /mnt/workspace
+
+      - name: Commit and push downloaded file to repository
+        run: |
+          # Copiar el/los archivo(s) descargado(s) al directorio del repositorio
+          cp /mnt/workspace/* $GITHUB_WORKSPACE/
+          cd $GITHUB_WORKSPACE
+          # Configurar Git para el commit
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Agregar los cambios y hacer commit
+          git add .
+          git commit -m "Agrega archivo descargado desde ${{ github.event.inputs.DOWNLOAD_URL }}" || echo "No hay cambios para commitear"
+          # Subir los cambios al repositorio
+          git push
