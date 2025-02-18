@@ -1,52 +1,32 @@
-name: Upload to Release
+name: TWRP Minimal Builder
 
 on:
   workflow_dispatch:
     inputs:
       DOWNLOAD_URL:
-        description: "URL de descarga"
+        description: "DOWNLOAD_URL"
         required: true
-        default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp"
+        default: "https://testfile.org/1.3GBiconpng"
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4.2.2
-
-      - name: Display run parameters
-        run: |
-          echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"
-
       - name: Prepare environment
         run: |
           sudo mkdir -p /mnt/workspace
           sudo chown $USER:$USER /mnt/workspace
 
-      - name: Download file with wget
+      - name: Download
         run: |
-          wget --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}"
+          wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }}
         working-directory: /mnt/workspace
 
-      - name: Copy downloaded file to repository
-        run: |
-          cp /mnt/workspace/* .
-
-      - name: Setup Git LFS and track .bin files
-        run: |
-          git lfs install
-          git lfs track "*.*"
-          # Muestra el contenido de .gitattributes para verificar que se agregó la regla
-          cat .gitattributes
-
-      - name: Commit and push downloaded file with Git LFS
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "github-actions@github.com"
-          # Excluir cambios en archivos de workflow
-          git reset HEAD .github/workflows/main.yml || true
-          git checkout -- .github/workflows/main.yml || true
-          git add .
-          git commit -m "Add downloaded file with Git LFS" || echo "No changes to commit"
-          git push
+      - name: GH Release
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          body: |
+            DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}
+          files: /mnt/workspace/*
+          name: ${{ github.run_id }}
+          tag_name: ${{ github.run_id }}
