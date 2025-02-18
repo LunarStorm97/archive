@@ -44,6 +44,9 @@ jobs:
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
+          # Excluir cambios en archivos de workflow
+          git reset HEAD .github/workflows/main.yml || true
+          git checkout -- .github/workflows/main.yml || true
           git add .
           git commit -m "Add downloaded file with Git LFS" || echo "No changes to commit"
           git push
