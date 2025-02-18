@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       DOWNLOAD_URL:
-        description: "DOWNLOAD_URL"
+        description: "DOWNLOAD URL"
         required: true
         default: "https://ash-speed.hetzner.com/100MB.bin"
 
@@ -12,10 +12,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Display run parameters
-        run: |
-          echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"
-
       - name: Download file
         run: |
           wget ${{ github.event.inputs.DOWNLOAD_URL }}
@@ -31,5 +27,5 @@ jobs:
           body: |
             DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}
           files: ${{ env.FILE_NAME }}
-          name: ${{ github.event.inputs.DEVICE_CODENAME }}-${{ github.run_id }}
-          tag_name: ${{ github.run_id }}
+          name: ${{ env.FILE_NAME }}
+          tag_name: ${{ env.FILE_NAME }}
