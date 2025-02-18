@@ -1,50 +1,36 @@
-name: Download to Release
+name: Upload to Release
 
-on:
-  workflow_dispatch:
-    inputs:
-      DOWNLOAD_URL:
-        description: "DOWNLOAD URL"
-        default: "https://ash-speed.hetzner.com/100MB.bin"
-        required: true
+on:  
+  workflow_dispatch:  
+    inputs:  
+      DOWNLOAD_URL:  
+        description: "DOWNLOAD_URL"  
+        required: true  
+        default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp"  
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download file
-        run: |
-          # Descargar archivo con wget
-          wget --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}"
+jobs:  
+  release:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Display run parameters  
+        run: |  
+          echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"  
 
-          # Extraer el nombre de archivo correctamente desde la cabecera HTTP
-          FILE_NAME=$(curl -I -s "${{ github.event.inputs.DOWNLOAD_URL }}" | grep -i 'Content-Disposition' | awk -F 'filename=' '{print $2}' | tr -d '";' | sed -E "s/^'|'$//g")
+      - name: Prepare environment  
+        run: |  
+          sudo mkdir -p /mnt/workspace  
+          sudo chown $USER:$USER /mnt/workspace  
 
-          # Si no se encuentra el nombre del archivo en la cabecera, usar basename de la URL
-          if [ -z "$FILE_NAME" ]; then
-            FILE_NAME=$(basename "${{ github.event.inputs.DOWNLOAD_URL }}")
-          fi
+      - name: Build recovery  
+        run: |  
+          wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }}  
+        working-directory: /mnt/workspace  
 
-          echo "Archivo descargado como: $FILE_NAME"
-          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
-
-      - name: Split large file if needed
-        run: |
-          FILE_SIZE=$(stat -c%s "${{ env.FILE_NAME }}")
-          echo "File size: $FILE_SIZE bytes"
-
-          # 2GB = 2147483648 bytes
-          if [ "$FILE_SIZE" -ge 2147483648 ]; then
-            echo "El archivo pesa 2GB o más. Dividiendo en partes de 1024m..."
-            split -b 1024m "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
-            rm "${{ env.FILE_NAME }}"
-          else
-            echo "El archivo es menor a 2GB. No se requiere división."
-          fi
-
-      - name: GH Release
-        uses: softprops/action-gh-release@v2.2.1
-        with:
-          files: ${{ env.FILE_NAME }}*
-          name: ${{ env.FILE_NAME }}
-          tag_name: ${{ env.FILE_NAME }}
+      - name: GH Release  
+        uses: softprops/action-gh-release@v2.2.1  
+        with:  
+          body: |  
+            DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}  
+          files: /mnt/workspace/*  
+          name: ${{ github.event.inputs.DOWNLOAD_URL | basename | sed 's/\.[^.]*$//' }}
+          tag_name: ${{ github.event.inputs.DOWNLOAD_URL | basename | sed 's/\.[^.]*$//' }}
