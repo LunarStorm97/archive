@@ -13,12 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download file
-        run: |
-          wget "${{ github.event.inputs.DOWNLOAD_URL }}"
+        run: wget "${{ github.event.inputs.DOWNLOAD_URL }}"
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: ${{ github.event.inputs.DOWNLOAD_URL }}
-          name: ${{ github.event.inputs.DOWNLOAD_URL }}
-          tag_name: ${{ github.event.inputs.DOWNLOAD_URL }}
+          files: ${{ github.event.inputs.DOWNLOAD_URL.split('/')[(github.event.inputs.DOWNLOAD_URL.split('/').length - 1)] }}
+          name: ${{ github.event.inputs.DOWNLOAD_URL.split('/')[(github.event.inputs.DOWNLOAD_URL.split('/').length - 1)] }}
+          tag_name: ${{ github.event.inputs.DOWNLOAD_URL.split('/')[(github.event.inputs.DOWNLOAD_URL.split('/').length - 1)] }}
