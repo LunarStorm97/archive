@@ -19,7 +19,7 @@ jobs:
     
       - name: Download    
         run: |    
-          wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }} -P /mnt/workspace    
+          wget --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}" -P /mnt/workspace    
           FILE_NAME=$(ls /mnt/workspace)    
           FILE_SIZE=$(stat -c %s /mnt/workspace/$FILE_NAME)    
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV    
