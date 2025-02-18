@@ -20,7 +20,7 @@ jobs:
       - name: Download
         run: |
           wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }} -P /mnt/workspace
-          FILE_NAME=$(basename $(ls /mnt/workspace))
+          FILE_NAME=$(ls /mnt/workspace)
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
       - name: GH Release
