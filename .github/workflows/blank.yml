@@ -1,30 +1,30 @@
 name: Download to Release
 
-on:
-  workflow_dispatch:
-    inputs:
-      DOWNLOAD_URL:
-        description: "DOWNLOAD_URL"
-        required: true
-        default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp"
+on:  
+  workflow_dispatch:  
+    inputs:  
+      DOWNLOAD_URL:  
+        description: "DOWNLOAD_URL"  
+        required: true  
+        default: "https://ash-speed.hetzner.com/100MB.bin"  
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Display run parameters
-        run: |
-          echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"
+jobs:  
+  release:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: Display run parameters  
+        run: |  
+          echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"  
 
-      - name: Download file
-        run: |
-          wget ${{ github.event.inputs.DOWNLOAD_URL }}
+      - name: Download file  
+        run: |  
+          wget ${{ github.event.inputs.DOWNLOAD_URL }}  
 
-      - name: GH Release
-        uses: softprops/action-gh-release@v2.2.1
-        with:
-          body: |
-            DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}
-          files: /mnt/workspace/out/target/product/${{ github.event.inputs.DEVICE_CODENAME }}/${{ github.event.inputs.PARTITION_TARGET }}.img
-          name: ${{ github.event.inputs.DEVICE_CODENAME }}-${{ github.run_id }}
+      - name: GH Release  
+        uses: softprops/action-gh-release@v2.2.1  
+        with:  
+          body: |  
+            DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}  
+          files: $(basename ${{ github.event.inputs.DOWNLOAD_URL }})  
+          name: ${{ github.event.inputs.DEVICE_CODENAME }}-${{ github.run_id }}  
           tag_name: ${{ github.run_id }}
