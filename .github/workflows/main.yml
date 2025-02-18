@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       DOWNLOAD_URL:
-        description: "URL desde la que se descargará el archivo"
+        description: "DOWNLOAD_URL"
         required: true
         default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp"
 
@@ -12,12 +12,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      # Se hace checkout del repositorio actual para poder trabajar con él
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Display run parameters
-        run: echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"
+        run: |
+          echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"
 
       - name: Prepare environment
         run: |
@@ -29,16 +26,17 @@ jobs:
           wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }}
         working-directory: /mnt/workspace
 
-      - name: Commit and push downloaded file to repository
+      - name: Setup Git configuration
         run: |
-          # Copiar el/los archivo(s) descargado(s) al directorio del repositorio
-          cp /mnt/workspace/* $GITHUB_WORKSPACE/
-          cd $GITHUB_WORKSPACE
-          # Configurar Git para el commit
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Agregar los cambios y hacer commit
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Add downloaded file and commit
+        run: |
+          cd /mnt/workspace
           git add .
-          git commit -m "Agrega archivo descargado desde ${{ github.event.inputs.DOWNLOAD_URL }}" || echo "No hay cambios para commitear"
-          # Subir los cambios al repositorio
-          git push
+          git commit -m "Add downloaded file from ${DOWNLOAD_URL}"
+        
+      - name: Push changes
+        run: |
+          git push origin HEAD:main  # Cambia 'main' por la rama en la que desees hacer push
