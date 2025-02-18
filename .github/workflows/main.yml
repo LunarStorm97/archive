@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       DOWNLOAD_URL:
-        description: 'DOWNLOAD URL'
-        default: 'https://ash-speed.hetzner.com/100MB.bin'
+        description: "DOWNLOAD URL"
+        default: "https://ash-speed.hetzner.com/100MB.bin"
         required: true
 
 jobs:
@@ -13,11 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download file
-        run: wget "${{ github.event.inputs.DOWNLOAD_URL }}"
+        run: |
+          wget "${{ github.event.inputs.DOWNLOAD_URL }}"
+          FILE_NAME=$(basename "${{ github.event.inputs.DOWNLOAD_URL }}")
+          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: ${{ github.event.inputs.DOWNLOAD_URL.split('/')[(github.event.inputs.DOWNLOAD_URL.split('/').length - 1)] }}
-          name: ${{ github.event.inputs.DOWNLOAD_URL.split('/')[(github.event.inputs.DOWNLOAD_URL.split('/').length - 1)] }}
-          tag_name: ${{ github.event.inputs.DOWNLOAD_URL.split('/')[(github.event.inputs.DOWNLOAD_URL.split('/').length - 1)] }}
+          files: ${{ env.FILE_NAME }}
+          name: ${{ env.FILE_NAME }}
+          tag_name: ${{ env.FILE_NAME }}
