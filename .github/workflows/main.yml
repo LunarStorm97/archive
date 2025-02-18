@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       DOWNLOAD_URL:
-        description: "DOWNLOAD_URL"
+        description: "URL de descarga"
         required: true
         default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp"
 
@@ -12,6 +12,10 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      # Primero se clona el repositorio para trabajar sobre él
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Display run parameters
         run: |
           echo "DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}"
@@ -21,22 +25,21 @@ jobs:
           sudo mkdir -p /mnt/workspace
           sudo chown $USER:$USER /mnt/workspace
 
-      - name: Download file
+      - name: Download file with wget
         run: |
-          wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }}
+          wget --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}"
         working-directory: /mnt/workspace
 
-      - name: Setup Git configuration
+      # Se copia el archivo descargado al directorio del repositorio
+      - name: Copy downloaded file to repository
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          cp /mnt/workspace/* .
 
-      - name: Add downloaded file and commit
+      # Se configura git, se hace commit y se sube el cambio
+      - name: Commit and push downloaded file
         run: |
-          cd /mnt/workspace
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
           git add .
-          git commit -m "Add downloaded file from ${DOWNLOAD_URL}"
-        
-      - name: Push changes
-        run: |
-          git push origin HEAD:main  # Cambia 'main' por la rama en la que desees hacer push
+          git commit -m "Add downloaded file" || echo "No changes to commit"
+          git push
