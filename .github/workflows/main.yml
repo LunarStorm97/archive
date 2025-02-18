@@ -14,8 +14,17 @@ jobs:
     steps:
       - name: Download file
         run: |
+          # Descargar el archivo y obtener el nombre correcto desde la cabecera
           wget --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}"
-          FILE_NAME=$(basename "${{ github.event.inputs.DOWNLOAD_URL }}")
+
+          # Obtener el nombre del archivo de la cabecera 'Content-Disposition'
+          FILE_NAME=$(curl -I -s "${{ github.event.inputs.DOWNLOAD_URL }}" | grep -i 'Content-Disposition' | sed -E 's/.*filename="([^"]+)".*/\1/')
+          
+          # Si no se encuentra el nombre del archivo, utilizar basename de la URL
+          if [ -z "$FILE_NAME" ]; then
+            FILE_NAME=$(basename "${{ github.event.inputs.DOWNLOAD_URL }}")
+          fi
+          
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
       - name: Split large file if needed
