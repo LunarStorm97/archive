@@ -14,29 +14,20 @@ jobs:
     steps:
       - name: Prepare environment
         run: |
-          sudo mkdir -p /mnt/workspace
+          sudo mkdir -p /mnt/workspace    
           sudo chown $USER:$USER /mnt/workspace
 
-      - name: Download file
+      - name: Download
         run: |
           wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }} -P /mnt/workspace
-          FILE_PATH="/mnt/workspace/$(basename ${{ github.event.inputs.DOWNLOAD_URL }})"
-          echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
-          FILE_SIZE=$(stat -c %s $FILE_PATH)
-          echo "FILE_SIZE=$FILE_SIZE" >> $GITHUB_ENV
+          FILE_NAME=$(basename $(ls /mnt/workspace))
+          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
-      - name: Split large files
-        if: ${{ env.FILE_SIZE > 2147483648 }}
-        run: |
-          split -b 1024m ${{ env.FILE_PATH }} ${env.FILE_PATH}_part_
-          rm ${{ env.FILE_PATH }}
-
-      - name: Upload to GitHub Release
+      - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           body: |
             DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}
-          files: |
-            /mnt/workspace/${{ env.FILE_PATH }}*
-          name: ${{ env.FILE_PATH }}
-          tag_name: ${{ env.FILE_PATH }}
+          files: /mnt/workspace/${{ env.FILE_NAME }}
+          name: ${{ env.FILE_NAME }}
+          tag_name: ${{ env.FILE_NAME }}
