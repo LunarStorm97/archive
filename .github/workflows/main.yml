@@ -14,23 +14,25 @@ jobs:
     steps:
       - name: Download file
         run: |
-          # Descargar el archivo y obtener el nombre correcto desde la cabecera
+          # Descargar archivo con wget
           wget --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}"
 
-          # Obtener el nombre del archivo de la cabecera 'Content-Disposition'
-          FILE_NAME=$(curl -I -s "${{ github.event.inputs.DOWNLOAD_URL }}" | grep -i 'Content-Disposition' | sed -E 's/.*filename="([^"]+)".*/\1/')
-          
-          # Si no se encuentra el nombre del archivo, utilizar basename de la URL
+          # Extraer el nombre de archivo correctamente desde la cabecera HTTP
+          FILE_NAME=$(curl -I -s "${{ github.event.inputs.DOWNLOAD_URL }}" | grep -i 'Content-Disposition' | awk -F 'filename=' '{print $2}' | tr -d '";' | sed -E "s/^'|'$//g")
+
+          # Si no se encuentra el nombre del archivo en la cabecera, usar basename de la URL
           if [ -z "$FILE_NAME" ]; then
             FILE_NAME=$(basename "${{ github.event.inputs.DOWNLOAD_URL }}")
           fi
-          
+
+          echo "Archivo descargado como: $FILE_NAME"
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
       - name: Split large file if needed
         run: |
           FILE_SIZE=$(stat -c%s "${{ env.FILE_NAME }}")
           echo "File size: $FILE_SIZE bytes"
+
           # 2GB = 2147483648 bytes
           if [ "$FILE_SIZE" -ge 2147483648 ]; then
             echo "El archivo pesa 2GB o más. Dividiendo en partes de 1024m..."
@@ -43,7 +45,6 @@ jobs:
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          # Si el archivo se dividió, se subirán todas las partes
           files: ${{ env.FILE_NAME }}*
           name: ${{ env.FILE_NAME }}
           tag_name: ${{ env.FILE_NAME }}
