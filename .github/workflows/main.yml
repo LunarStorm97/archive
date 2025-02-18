@@ -12,9 +12,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      # Primero se clona el repositorio para trabajar sobre él
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
       - name: Display run parameters
         run: |
@@ -30,16 +29,21 @@ jobs:
           wget --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}"
         working-directory: /mnt/workspace
 
-      # Se copia el archivo descargado al directorio del repositorio
       - name: Copy downloaded file to repository
         run: |
           cp /mnt/workspace/* .
 
-      # Se configura git, se hace commit y se sube el cambio
-      - name: Commit and push downloaded file
+      - name: Setup Git LFS and track .bin files
+        run: |
+          git lfs install
+          git lfs track "*.*"
+          # Muestra el contenido de .gitattributes para verificar que se agregó la regla
+          cat .gitattributes
+
+      - name: Commit and push downloaded file with Git LFS
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
           git add .
-          git commit -m "Add downloaded file" || echo "No changes to commit"
+          git commit -m "Add downloaded file with Git LFS" || echo "No changes to commit"
           git push
