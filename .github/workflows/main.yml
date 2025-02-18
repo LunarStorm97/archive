@@ -21,8 +21,8 @@ jobs:
         run: |
           wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }} -P /mnt/workspace
           FILE_PATH="/mnt/workspace/$(basename ${{ github.event.inputs.DOWNLOAD_URL }})"
-          FILE_SIZE=$(stat -c %s $FILE_PATH)
           echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
+          FILE_SIZE=$(stat -c %s $FILE_PATH)
           echo "FILE_SIZE=$FILE_SIZE" >> $GITHUB_ENV
 
       - name: Split large files
@@ -31,7 +31,7 @@ jobs:
           split -b 1024m ${{ env.FILE_PATH }} ${env.FILE_PATH}_part_
           rm ${{ env.FILE_PATH }}
 
-      - name: GH Release
+      - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           body: |
