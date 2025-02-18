@@ -27,14 +27,15 @@ jobs:
       
       - name: Split file if larger than 2GB    
         run: |    
-          # Convert 2GB to bytes for comparison
+          # Convert 2GB to bytes for comparison    
           TWO_GB=$((2 * 1024 * 1024 * 1024))    
           if [ $FILE_SIZE -ge $TWO_GB ]; then    
             echo "File is larger than 2GB, splitting..."    
             split -b 1024m /mnt/workspace/$FILE_NAME /mnt/workspace/${FILE_NAME}.part    
             echo "Files split into 1GB parts."    
-            # Update the FILE_NAME to the split files    
-            FILE_NAME="${FILE_NAME}.part*"    
+            rm /mnt/workspace/$FILE_NAME  # Eliminar el archivo original    
+            echo "Original file deleted."    
+            echo "FILE_NAME=${FILE_NAME}.part*" >> $GITHUB_ENV  # Actualizar variable FILE_NAME    
           fi    
         shell: bash
     
