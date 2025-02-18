@@ -1,4 +1,4 @@
-name: TWRP Minimal Builder
+name: Upload to Release
 
 on:
   workflow_dispatch:
