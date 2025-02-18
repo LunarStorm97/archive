@@ -17,28 +17,26 @@ jobs:
           sudo mkdir -p /mnt/workspace
           sudo chown $USER:$USER /mnt/workspace
 
-      - name: Download
+      - name: Download file
         run: |
           wget --content-disposition ${{ github.event.inputs.DOWNLOAD_URL }} -P /mnt/workspace
-          FILE_NAME=$(basename $(ls /mnt/workspace))
-          FILE_SIZE=$(stat -c %s /mnt/workspace/$FILE_NAME)
-          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
+          FILE_PATH="/mnt/workspace/$(basename ${{ github.event.inputs.DOWNLOAD_URL }})"
+          FILE_SIZE=$(stat -c %s $FILE_PATH)
+          echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
           echo "FILE_SIZE=$FILE_SIZE" >> $GITHUB_ENV
 
       - name: Split large files
         if: ${{ env.FILE_SIZE > 2147483648 }}
         run: |
-          for file in /mnt/workspace/$FILE_NAME; do
-            split -b 1024m $file ${file}_part_
-            rm $file
-          done
+          split -b 1024m ${{ env.FILE_PATH }} ${env.FILE_PATH}_part_
+          rm ${{ env.FILE_PATH }}
 
-      - name: GH Release
+      - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           body: |
             DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}
           files: |
-            /mnt/workspace/${{ env.FILE_NAME }}*
-          name: ${{ env.FILE_NAME }}
-          tag_name: ${{ env.FILE_NAME }}
+            /mnt/workspace/${{ env.FILE_PATH }}*
+          name: ${{ env.FILE_PATH }}
+          tag_name: ${{ env.FILE_PATH }}
