@@ -31,7 +31,7 @@ jobs:
           split -b 1024m ${{ env.FILE_PATH }} ${env.FILE_PATH}_part_
           rm ${{ env.FILE_PATH }}
 
-      - name: Upload to GitHub Release
+      - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           body: |
