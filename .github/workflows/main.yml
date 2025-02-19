@@ -30,7 +30,6 @@ jobs:
           if [ "$FILE_SIZE" -ge 2147483648 ]; then
             split -b 1024m "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
             rm "${{ env.FILE_NAME }}"
-          else
           fi
         working-directory: /mnt/workspace
 
