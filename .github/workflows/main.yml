@@ -40,6 +40,6 @@ jobs:
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: /mnt/workspace/${{ env.file_name }}*
+          files: /mnt/workspace/*
           name: ${{ env.file_name }}
           tag_name: ${{ env.file_name }}
