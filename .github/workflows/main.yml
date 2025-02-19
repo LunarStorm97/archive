@@ -24,16 +24,13 @@ jobs:
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         working-directory: /mnt/workspace
 
-      - name: Split large file if needed
+      - name: Split large file
         run: |
           FILE_SIZE=$(stat -c%s "${{ env.FILE_NAME }}")
-          echo "File size: $FILE_SIZE bytes"
           if [ "$FILE_SIZE" -ge 2147483648 ]; then
-            echo "El archivo pesa 2GB o más. Dividiendo en partes de 1024m..."
             split -b 1024m "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
             rm "${{ env.FILE_NAME }}"
           else
-            echo "El archivo es menor a 2GB. No se requiere división."
           fi
         working-directory: /mnt/workspace
 
@@ -42,6 +39,7 @@ jobs:
         with:
           body: |
             DOWNLOAD URL: ${{ github.event.inputs.DOWNLOAD_URL }}
-          files: /mnt/workspace/${{ env.FILE_NAME }}*
+          files: ${{ env.FILE_NAME }}*
           name: ${{ env.FILE_NAME }}
           tag_name: ${{ env.FILE_NAME }}
+          working-directory: /mnt/workspace
