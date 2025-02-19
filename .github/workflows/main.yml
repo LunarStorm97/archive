@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Prepare environment
         run: |
-          sudo mkdir -p /mnt/workspace    
+          sudo mkdir -p /mnt/workspace
           sudo chown $USER:$USER /mnt/workspace
 
       - name: Download file
@@ -24,13 +24,17 @@ jobs:
           echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         working-directory: /mnt/workspace
 
-      - name: Split large file
+      - name: Check file size
         run: |
           FILE_SIZE=$(stat -c%s "${{ env.FILE_NAME }}")
-          if [ "$FILE_SIZE" -ge 2147483648 ]; then
-            split -b 1024m "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
-            rm "${{ env.FILE_NAME }}"
-          fi
+          echo "FILE_SIZE=$FILE_SIZE" >> $GITHUB_ENV
+        working-directory: /mnt/workspace
+
+      - name: Split large file
+        if: ${{ env.FILE_SIZE >= 2147483648 }}
+        run: |
+          split -b 1024m "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
+          rm "${{ env.FILE_NAME }}"
         working-directory: /mnt/workspace
 
       - name: GH Release
