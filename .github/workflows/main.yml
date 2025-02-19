@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       download_url:
-        description: "URL to download the file"
+        description: "URL of the file to download"
         required: true
         default: "http://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jquery-speedtest/100MB.txt"
 
