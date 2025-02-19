@@ -22,24 +22,24 @@ jobs:
         run: |
           wget --content-disposition "${{ github.event.inputs.download_url }}"
           file_name=$(ls)
-          file_path=$(realpath *)
           echo "file_name=$file_name" >> $GITHUB_ENV
-          echo "file_path=$file_path" >> $GITHUB_ENV
 
       - name: Check file size
+        working-directory: /mnt/workspace
         run: |
-          file_size=$(stat -c%s "${{ env.file_path }}")
+          file_size=$(stat -c%s "${{ env.file_name }}")
           echo "file_size=$file_size" >> $GITHUB_ENV
 
       - name: Split large file
         if: ${{ env.file_size >= 2147483648 }}
+        working-directory: /mnt/workspace
         run: |
-          split -b 1G "${{ env.file_path }}" "${{ env.file_path }}_part_"
-          rm "${{ env.file_path }}"
+          split -b 1G "${{ env.file_name }}" "${{ env.file_name }}_part_"
+          rm "${{ env.file_name }}"
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: /mnt/workspace/*
+          files: /mnt/workspace/${{ env.file_name }}*
           name: ${{ env.file_name }}
           tag_name: ${{ env.file_name }}
