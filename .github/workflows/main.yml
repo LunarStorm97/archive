@@ -33,7 +33,7 @@ jobs:
       - name: Split large file
         if: ${{ env.FILE_SIZE >= 2147483648 }}
         run: |
-          split -b 2147483648 "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
+          split -b 1G "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
           rm "${{ env.FILE_NAME }}"
         working-directory: /mnt/workspace
 
