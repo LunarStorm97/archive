@@ -31,7 +31,7 @@ jobs:
           echo file_size=$file_size >> $GITHUB_ENV
 
       - name: Split large file
-        if: ${{ env.file_size > 20000 }}
+        if: ${{ env.file_size > 200 }}
         working-directory: /mnt/workspace
         run: |
           split -b 20k ${{ env.file_name }} ${{ env.file_name }}_part_
