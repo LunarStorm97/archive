@@ -20,7 +20,7 @@ jobs:
       - name: Download file
         working-directory: /mnt/workspace
         run: |
-          wget --content-disposition ${{ github.event.inputs.download_url }}
+          wget --content-disposition "${{ github.event.inputs.download_url }}"
           file_name=$(ls)
           echo file_name=$file_name >> $GITHUB_ENV
 
