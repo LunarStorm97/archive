@@ -1,0 +1,39 @@
+name: Kick to Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare environment
+        run: |
+          sudo mkdir -p /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
+
+      - name: Download file with ffmpeg
+        working-directory: /mnt/workspace
+        run: |
+          ffmpeg -i "https://stream.kick.com:443/ivs/v1/196233775518/V3f9DWwe2lks/2025/2/12/22/0/8eKz327NWS8t/media/hls/1080p60/playlist.m3u8" -c copy output.ts
+          echo "file_name=output.ts" >> $GITHUB_ENV
+
+      - name: Check file size
+        working-directory: /mnt/workspace
+        run: |
+          file_size=$(stat -c%s "${{ env.file_name }}")
+          echo file_size=$file_size >> $GITHUB_ENV
+
+      - name: Split large file
+        if: ${{ env.file_size >= 2147483648 }}
+        working-directory: /mnt/workspace
+        run: |
+          split -b 1G "${{ env.file_name }}" "${{ env.file_name }}_part_"
+          rm "${{ env.file_name }}"
+
+      - name: GH Release
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          files: /mnt/workspace/*
+          name: ${{ env.file_name }}
+          tag_name: ${{ env.file_name }}
