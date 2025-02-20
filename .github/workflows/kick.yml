@@ -12,11 +12,10 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Prepare environment
         run: |
-          df -h
           sudo apt update
           sudo apt install ffmpeg
           sudo mkdir -p /mnt/workspace
