@@ -1,0 +1,32 @@
+name: Upload to Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare environment
+        run: |
+          sudo mkdir -p /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
+
+      - name: Generate 2GB file
+        working-directory: /mnt/workspace
+        run: |
+          fallocate -l 2147483648 test_file_2GB.bin
+          echo "file_name=test_file_2GB.bin" >> $GITHUB_ENV
+
+      - name: Check file size
+        working-directory: /mnt/workspace
+        run: |
+          file_size=$(stat -c%s "${{ env.file_name }}")
+          echo "File Size: $file_size bytes"
+
+      - name: GH Release
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          files: /mnt/workspace/*
+          name: "Release - 2GB File"
+          tag_name: "2GB_File_Release"
