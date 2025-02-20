@@ -15,7 +15,7 @@ jobs:
       - name: Generate 2GB file
         working-directory: /mnt/workspace
         run: |
-          fallocate -l 2147483648 test_file_2GB.bin
+          fallocate -l 2147483647 test_file_2GB.bin
           echo "file_name=test_file_2GB.bin" >> $GITHUB_ENV
 
       - name: Check file size
