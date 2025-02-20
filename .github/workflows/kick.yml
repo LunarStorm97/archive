@@ -9,10 +9,10 @@ jobs:
     steps:
       - name: Prepare environment
         run: |
-          sudo mkdir -p /mnt/workspace
-          sudo chown $USER:$USER /mnt/workspace
           sudo apt update
           sudo apt install ffmpeg
+          sudo mkdir -p /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
 
       - name: Download file with ffmpeg
         working-directory: /mnt/workspace
