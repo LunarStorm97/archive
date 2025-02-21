@@ -6,7 +6,6 @@ on:
       DOWNLOAD_URL:
         description: "Download URL"
         required: true
-        default:
 
 jobs:
   release:
