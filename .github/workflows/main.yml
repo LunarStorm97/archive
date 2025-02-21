@@ -6,7 +6,7 @@ on:
       DOWNLOAD_URL:
         description: Download URL
         required: true
-        default: https://software.download.prss.microsoft.com/dbazure/Win11_24H2_English_x64.iso?t=7a9fa3e6-fbdf-4360-b36d-f741af09ab27&P1=1740193241&P2=601&P3=2&P4=TxXKGXyAUpJ24FzDF5Q%2bWy5OIbthgFbLuL53SPrB8ygofj7tROhIrSqOu0f1J5I2xP7SKp6Dyw%2bkJSM%2fvrB%2fOtvi2XOgFXXR1p4qLS17TAfUa85t8%2buU8UlX4zo39H%2bf4Y3RdcUm3aHr5jwKId%2bqT0U9b9bGu6PmDMaPQo7raHBbbhGDBHTjpL%2bvzxkRxv3nlxQQNsCnMHsqySS4gCNQtwwRBwwdq56bdt%2bSHmoVSVWikLfMwXztTVJuLhGCDRrH2ykTL5SWvGeRmhz3oRF3h0pC8Pf3F4NVwSF4LIEx728aMgZhD3wZcMrlalO44SrLs8VK7I3VcrzIBYRyddl7mQ%3d%3d
+        default: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jquery-speedtest/100MB.txt
 
 jobs:
   release:
