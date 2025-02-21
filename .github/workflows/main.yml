@@ -20,14 +20,14 @@ jobs:
       - name: Download file
         working-directory: /mnt/workspace
         run: |
-          wget --no-check-certificate --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}"
+          wget --no-check-certificate "${{ github.event.inputs.DOWNLOAD_URL }}"
           FILE_NAME=$(ls)
           echo FILE_NAME=$FILE_NAME >> $GITHUB_ENV
 
       - name: Check file size
         working-directory: /mnt/workspace
         run: |
-          FILE_SIZE=$(stat -c%s ${{ env.FILE_NAME }})
+          FILE_SIZE=$(stat -c%s "${{ env.FILE_NAME }}")
           echo FILE_SIZE=$FILE_SIZE >> $GITHUB_ENV
 
       - name: Split large file
