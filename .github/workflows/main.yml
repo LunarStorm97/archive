@@ -8,6 +8,7 @@ on:
         default: "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jquery-speedtest/100MB.txt"
         required: true
         type: string
+
 jobs:
   release:
     runs-on: ubuntu-latest
