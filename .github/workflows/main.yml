@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       DOWNLOAD_URL:
-        description: Download URL
+        description: "Download URL"
+        default: "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jquery-speedtest/100MB.txt"
         required: true
-        default: https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jquery-speedtest/100MB.txt
-
+        type: string
 jobs:
   release:
     runs-on: ubuntu-latest
