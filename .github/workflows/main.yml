@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       DOWNLOAD_URL:
-        description: "Download URL"
+        description: Download URL
         required: true
 
 jobs:
