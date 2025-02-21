@@ -34,8 +34,8 @@ jobs:
         if: ${{ env.FILE_SIZE >= 2147483648 }}
         working-directory: /mnt/workspace
         run: |
-          split -b 1G ${{ env.FILE_NAME }} ${{ env.FILE_NAME }}_part_
-          rm ${{ env.FILE_NAME }}
+          split -b 1G "${{ env.FILE_NAME }}" "${{ env.FILE_NAME }}_part_"
+          rm "${{ env.FILE_NAME }}"
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
