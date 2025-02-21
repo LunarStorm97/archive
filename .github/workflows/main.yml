@@ -6,7 +6,7 @@ on:
       DOWNLOAD_URL:
         description: "Download URL"
         required: true
-        default: "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jquery-speedtest/100MB.txt"
+        default:
 
 jobs:
   release:
