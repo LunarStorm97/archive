@@ -16,20 +16,20 @@ jobs:
       - name: Prepare environment
         run: |
           sudo mkdir -p /mnt/workspace
-          sudo chown "$USER:$USER" /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
 
       - name: Download file
         working-directory: /mnt/workspace
         run: |
           wget --no-check-certificate --content-disposition "${{ github.event.inputs.download_url }}"
           file_name=$(ls)
-          echo "file_name=$file_name" >> "$GITHUB_ENV"
+          echo file_name=$file_name >> $GITHUB_ENV
 
       - name: Check file size
         working-directory: /mnt/workspace
         run: |
           file_size=$(stat -c%s "${{ env.file_name }}")
-          echo "file_size=$file_size" >> "$GITHUB_ENV"
+          echo file_size=$file_size >> $GITHUB_ENV
 
       - name: Split large file
         if: ${{ env.file_size >= 2147483648 }}
@@ -42,5 +42,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: /mnt/workspace/*
-          name: "${{ env.file_name }}"
-          tag_name: "${{ env.file_name }}"
+          name: ${{ env.file_name }}
+          tag_name: ${{ env.file_name }}
