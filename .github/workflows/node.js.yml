@@ -37,7 +37,7 @@ jobs:
       - name: Split large file
         if: ${{ env.file_size >= 2147483648 }}
         run: |
-          split -b 1G "${{ env.file_path }}" "${{ env.file_path }}_part_"
+          split -b 1G "${{ env.file_path }}" "${{ env.file_path }}"_part_
           rm "${{ env.file_path }}"
 
       - name: Get latest firmware version
