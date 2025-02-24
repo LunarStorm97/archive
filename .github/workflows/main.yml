@@ -23,6 +23,10 @@ jobs:
         working-directory: /mnt/workspace
         run: |
           wget --no-check-certificate --content-disposition "${{ github.event.inputs.download_url }}"
+
+      - name: Check file name
+        working-directory: /mnt/workspace
+        run: |
           file_name=$(ls)
           echo "file_name=$file_name" >> $GITHUB_ENV
 
