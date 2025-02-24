@@ -45,4 +45,3 @@ jobs:
           files: /mnt/workspace/*
           name: ${{ env.file_name }}
           tag_name: ${{ env.file_name }}
- 
