@@ -34,22 +34,19 @@ jobs:
       - name: Get latest firmware version
         run: |
           LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml | grep -oP '<latest[^>]*>\K[^<]+')
-          echo LATEST_VERSION=$LATEST_VERSION >> $GITHUB_ENV
+          echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
-      - name: Check if release already exists
+      - name: Check if release exists
         id: check-release
         run: |
-          RELEASE_EXISTS=$(gh release view ${{ env.LATEST_VERSION }} --json tagName -q '.tagName' 2>/dev/null || echo 'false')
-          if [ "$RELEASE_EXISTS" != "false" ]; then
-            echo "Release ${{ env.LATEST_VERSION }} already exists."
-            echo "RELEASE_EXISTS=true" >> $GITHUB_ENV
+          if gh release view "$LATEST_VERSION" > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
           else
-            echo "Release ${{ env.LATEST_VERSION }} does not exist."
-            echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
+            echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
       - name: GH Release
-        if: env.RELEASE_EXISTS == 'false'
+        if: ${{ steps.check-release.outputs.exists == 'false' }}
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: SM-A236M_ARO/*
