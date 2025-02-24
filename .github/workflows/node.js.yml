@@ -27,8 +27,8 @@ jobs:
       - name: Split large files
         run: |
           for file in SM-A236M_ARO/AP*; do
-            split -b 1024m "$file" "${file}_part_"
-            rm "$file"
+            split -b 1024m $file ${file}_part_
+            rm $file
           done
 
       - name: Get latest firmware version
@@ -37,9 +37,8 @@ jobs:
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
       - name: Check if tag exists
-        id: check_tag
         run: |
-          if gh release view $LATEST_VERSION --repo ${{ github.repository }} >/dev/null 2>&1; then
+          if git ls-remote --tags origin $LATEST_VERSION | grep -q "$LATEST_VERSION"; then
             echo "TAG_EXISTS=true" >> $GITHUB_ENV
           else
             echo "TAG_EXISTS=false" >> $GITHUB_ENV
