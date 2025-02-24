@@ -3,7 +3,7 @@ name: Download and Release
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: 0 */6 * * *
 
 jobs:
   release:
@@ -13,12 +13,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
-          repository: "LunarStorm97/samfirm"
+          repository: LunarStorm97/samfirm
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
         with:
-          node-version: "22.x"
+          node-version: 22.x
 
       - name: Install dependencies
         run: npm install
@@ -29,30 +29,30 @@ jobs:
       - name: Check file path
         run: |
           file_path=$(ls SM-A236M_ARO/AP*)
-          echo "file_path=$file_path" >> $GITHUB_ENV
+          echo file_path=$file_path >> $GITHUB_ENV
 
       - name: Check file size
         run: |
-          file_size=$(stat -c%s "${{ env.file_path }}")
-          echo "file_size=$file_size" >> $GITHUB_ENV
+          file_size=$(stat -c%s ${{ env.file_path }})
+          echo file_size=$file_size >> $GITHUB_ENV
 
       - name: Split large file
         if: ${{ env.file_size >= 2147483648 }}
         run: |
-          split -b 1G "${{ env.file_path }}" "${{ env.file_path }}_part_"
-          rm "${{ env.file_path }}"
+          split -b 1G ${{ env.file_path }} ${{ env.file_path }}_part_
+          rm ${{ env.file_path }}
 
       - name: Get latest firmware version
         run: |
           latest_version=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml | grep -oP '<latest[^>]*>\K[^<]+')
-          echo "latest_version=$latest_version" >> $GITHUB_ENV
+          echo latest_version=$latest_version >> $GITHUB_ENV
 
       - name: Check if tag exists
         run: |
-          if git ls-remote --tags https://github.com/${{ github.repository }}.git "${{ env.latest_version }}" | grep -q "${{ env.latest_version }}"; then
-            echo "tag_exists=true" >> $GITHUB_ENV
+          if git ls-remote --tags https://github.com/${{ github.repository }}.git ${{ env.latest_version }} | grep -q ${{ env.latest_version }}; then
+            echo tag_exists=true >> $GITHUB_ENV
           else
-            echo "tag_exists=false" >> $GITHUB_ENV
+            echo tag_exists=false >> $GITHUB_ENV
           fi
 
       - name: GH Release
