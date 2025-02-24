@@ -39,7 +39,7 @@ jobs:
       - name: Check if tag exists
         id: check_tag
         run: |
-          if git ls-remote --tags --exit-code https://github.com/${{ github.repository }}.git refs/tags/$LATEST_VERSION; then
+          if gh release view $LATEST_VERSION --repo ${{ github.repository }} >/dev/null 2>&1; then
             echo "TAG_EXISTS=true" >> $GITHUB_ENV
           else
             echo "TAG_EXISTS=false" >> $GITHUB_ENV
