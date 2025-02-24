@@ -7,11 +7,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
-    env:
-      model: SM-A236M
-      region: ARO
-      imei: R5CW312KLVM
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -27,11 +22,11 @@ jobs:
         run: npm install
 
       - name: Run samfirm
-        run: node index.mjs -m "${{ env.model }}" -r "${{ env.region }}" -i "${{ env.imei }}"
+        run: node index.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 
       - name: Check file path
         run: |
-          file_path=$(ls ${{ env.model }}_${{ env.region }}/AP*)
+          file_path=$(ls SM-A236M_ARO/AP*)
           echo "file_path=$file_path" >> $GITHUB_ENV
 
       - name: Check file size
@@ -47,7 +42,7 @@ jobs:
 
       - name: Get latest firmware version
         run: |
-          latest_version=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/"${{ env.region }}/${{ env.model }}"/version.xml | grep -oP '<latest[^>]*>\K[^<]+')
+          latest_version=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml | grep -oP '<latest[^>]*>\K[^<]+')
           echo "latest_version=$latest_version" >> $GITHUB_ENV
 
       - name: Check if tag exists
@@ -62,6 +57,6 @@ jobs:
         if: ${{ env.tag_exists == false }}
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: ${{ env.model }}_${{ env.region }}/*
+          files: SM-A236M_ARO/*
           name: ${{ env.latest_version }}
           tag_name: ${{ env.latest_version }}
