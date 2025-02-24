@@ -1,10 +1,10 @@
-name: Node.js CI
+name: Download and Release
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,18 +24,21 @@ jobs:
       - name: Run script
         run: node index.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 
+      - name: Download file
+        run: |
+          file_name=$(ls SM-A236M_ARO/*)
+          echo "file_name=$file_name" >> $GITHUB_ENV
+
       - name: Check file size
         run: |
-          file_size=$(stat -c%s SM-A236M_ARO/AP*)
+          file_size=$(stat -c%s SM-A236M_ARO/"${{ env.file_name }}")
           echo "file_size=$file_size" >> $GITHUB_ENV
 
       - name: Split large file
         if: ${{ env.file_size >= 2147483648 }}
         run: |
-          for file in SM-A236M_ARO/AP*; do
-            split -b 1G "$file" "${file}_part_"
-            rm "$file"
-          done
+          split -b 1G SM-A236M_ARO/"${{ env.file_name }}" SM-A236M_ARO/"${{ env.file_name }}_part_"
+          rm SM-A236M_ARO/"${{ env.file_name }}"
 
       - name: Get latest firmware version
         run: |
@@ -55,5 +58,5 @@ jobs:
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: SM-A236M_ARO/*
-          name: ${{ env.latest_version }}
-          tag_name: ${{ env.latest_version }}
+          name: ${{ env.file_name }}
+          tag_name: ${{ env.file_name }}
