@@ -36,7 +36,19 @@ jobs:
           LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml | grep -oP '<latest[^>]*>\K[^<]+')
           echo LATEST_VERSION=$LATEST_VERSION >> $GITHUB_ENV
 
+      - name: Check if tag exists
+        id: check-tag
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ env.LATEST_VERSION }}" >/dev/null; then
+            echo "Tag ${{ env.LATEST_VERSION }} already exists."
+            echo "::set-output name=tag_exists::true"
+          else
+            echo "Tag ${{ env.LATEST_VERSION }} does not exist."
+            echo "::set-output name=tag_exists::false"
+          fi
+
       - name: GH Release
+        if: steps.check-tag.outputs.tag_exists == 'false'
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: SM-A236M_ARO/*
