@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
         with:
-          node-version: 22.x
+          node-version: "22.x"
 
       - name: Install dependencies
         run: npm install
@@ -38,7 +38,7 @@ jobs:
 
       - name: Check if tag exists
         run: |
-          if gh release view "$LATEST_VERSION" --repo $GITHUB_REPOSITORY; then
+          if git ls-remote --tags https://github.com/${{ github.repository }}.git "$LATEST_VERSION" | grep -q "$LATEST_VERSION"; then
             echo "TAG_EXISTS=true" >> $GITHUB_ENV
           else
             echo "TAG_EXISTS=false" >> $GITHUB_ENV
