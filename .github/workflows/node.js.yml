@@ -21,10 +21,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run script
+      - name: Run samfirm
         run: node index.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 
-      - name: Download file
+      - name: Check file path
         run: |
           file_path=$(ls SM-A236M_ARO/AP*)
           echo "file_path=$file_path" >> $GITHUB_ENV
