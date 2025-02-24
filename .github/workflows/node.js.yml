@@ -24,7 +24,7 @@ jobs:
       - name: Run script
         run: node index.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 
-      - name: Split large files
+      - name: Split large file
         run: |
           for file in SM-A236M_ARO/AP*; do
             split -b 1024m "$file" "${file}_part_"
