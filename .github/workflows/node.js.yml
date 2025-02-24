@@ -38,7 +38,7 @@ jobs:
 
       - name: Check if tag exists
         run: |
-          if git ls-remote --tags origin "$LATEST_VERSION" | grep -q "$LATEST_VERSION"; then
+          if gh release view "$LATEST_VERSION" --repo $GITHUB_REPOSITORY; then
             echo "TAG_EXISTS=true" >> $GITHUB_ENV
           else
             echo "TAG_EXISTS=false" >> $GITHUB_ENV
