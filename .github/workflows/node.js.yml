@@ -37,7 +37,7 @@ jobs:
           echo "file_size=$file_size" >> $GITHUB_ENV
 
       - name: Split large file
-        if: ${{ env.file_size >= 2147483648 }}
+        if: ${{ env.file_size >= '2147483648' }}
         run: |
           split -b 1G "${{ env.file_path }}" "${{ env.file_path }}_part_"
           rm "${{ env.file_path }}"
@@ -56,7 +56,7 @@ jobs:
           fi
 
       - name: GH Release
-        if: ${{ env.tag_exists == false }}
+        if: ${{ env.tag_exists == 'false' }}
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: SM-A236M_ARO/*
