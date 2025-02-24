@@ -36,17 +36,17 @@ jobs:
           LATEST_VERSION=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml | grep -oP '<latest[^>]*>\K[^<]+')
           echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
 
-      - name: Check if release exists
-        id: check-release
+      - name: Check if tag exists
+        id: check_tag
         run: |
-          if gh release view "$LATEST_VERSION" > /dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+          if git ls-remote --tags --exit-code https://github.com/LunarStorm97/SM-A236M_ARO.git refs/tags/$LATEST_VERSION; then
+            echo "TAG_EXISTS=true" >> $GITHUB_ENV
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "TAG_EXISTS=false" >> $GITHUB_ENV
           fi
 
       - name: GH Release
-        if: ${{ steps.check-release.outputs.exists == 'false' }}
+        if: env.TAG_EXISTS == 'true'
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: SM-A236M_ARO/*
