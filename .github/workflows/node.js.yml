@@ -26,7 +26,7 @@ jobs:
 
       - name: Check file size
         run: |
-          file_size=$(stat -c%s "SM-A236M_ARO/AP*")
+          file_size=$(stat -c%s SM-A236M_ARO/AP*)
           echo "file_size=$file_size" >> $GITHUB_ENV
 
       - name: Split large file
