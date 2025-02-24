@@ -24,10 +24,16 @@ jobs:
       - name: Run script
         run: node index.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 
+      - name: Check file size
+        run: |
+          file_size=$(stat -c%s "SM-A236M_ARO/AP*")
+          echo "file_size=$file_size" >> $GITHUB_ENV
+
       - name: Split large file
+        if: ${{ env.file_size >= 2147483648 }}
         run: |
           for file in SM-A236M_ARO/AP*; do
-            split -b 1024m "$file" "${file}_part_"
+            split -b 1G "$file" "${file}_part_"
             rm "$file"
           done
 
