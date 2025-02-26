@@ -47,7 +47,7 @@ jobs:
 
       - name: Check if tag exists
         run: |
-          if git ls-remote --tags https://github.com/${{ github.repository }}.git "${{ env.latest_version }}" | grep -q "${{ env.latest_version }}"; then
+          if git ls-remote --tags https://github.com/"${{ github.repository }}".git "${{ env.latest_version }}" | grep -q "${{ env.latest_version }}"; then
             echo "tag_exists=true" >> $GITHUB_ENV
           else
             echo "tag_exists=false" >> $GITHUB_ENV
