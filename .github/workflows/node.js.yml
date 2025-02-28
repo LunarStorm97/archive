@@ -29,7 +29,7 @@ jobs:
         run: npm install
 
       - name: Run samfirm
-        run: node index.mjs -m "${{ env.MODEL }}" -r "${{ env.REGION }}" -i "${{ env.IMEI }}"
+        run: node index.mjs -m "$MODEL" -r "${{ env.REGION }}" -i "${{ env.IMEI }}"
 
       - name: Check file path
         run: |
