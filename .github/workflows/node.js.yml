@@ -33,14 +33,14 @@ jobs:
 
       - name: Check file size
         run: |
-          file_size=$(stat -c%s ${{ env.file_path }})
+          file_size=$(stat -c%s "$file_path")
           echo "file_size=$file_size" >> "$GITHUB_ENV"
 
       - name: Split large file
         if: ${{ env.file_size >= 2147483648 }}
         run: |
-          split -b 1G ${{ env.file_path }} ${{ env.file_path }}_part_
-          rm ${{ env.file_path }}
+          split -b 1G "$file_path" ${{ env.file_path }}_part_
+          rm "$file_path"
 
       - name: Get latest firmware version
         run: |
@@ -49,16 +49,16 @@ jobs:
 
       - name: Check if tag exists
         run: |
-          if git ls-remote --tags https://github.com/${{ github.repository }}.git ${{ env.latest_version }} | grep -q ${{ env.latest_version }}; then
+          if git ls-remote --tags https://github.com/${{ github.repository }}.git "$latest_version" | grep -q "$latest_version"; then
             echo "tag_exists=true" >> "$GITHUB_ENV"
           else
             echo "tag_exists=false" >> "$GITHUB_ENV"
           fi
 
       - name: GH Release
-        if: ${{ env.tag_exists == false }}
+        if: ${{ tag_exists == false }}
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: SM-A236M_ARO/*
-          name: ${{ env.latest_version }}
-          tag_name: ${{ env.latest_version }}
+          name: ${{ latest_version }}
+          tag_name: ${{ latest_version }}
