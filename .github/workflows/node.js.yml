@@ -15,48 +15,49 @@ jobs:
           sudo mkdir -p /mnt/workspace
           sudo chown $USER:$USER /mnt/workspace
 
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           repository: "LunarStorm97/samfirm"
+          path: "/mnt/workspace/samfirm"
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v4
         with:
           node-version: "22.x"
 
       - name: Install dependencies
         run: npm install
-        working-directory: /mnt/workspace
+        working-directory: /mnt/workspace/samfirm
 
       - name: Run samfirm
         run: node index.mjs -m SM-A236M -r ARO -i R5CW312KLVM
-        working-directory: /mnt/workspace
+        working-directory: /mnt/workspace/samfirm
 
       - name: Check file path
         run: |
           FILE_PATH=$(ls SM-A236M_ARO/AP*)
           echo "FILE_PATH=$FILE_PATH" >> "$GITHUB_ENV"
-        working-directory: /mnt/workspace
+        working-directory: /mnt/workspace/samfirm
 
       - name: Check file size
         run: |
           FILE_SIZE=$(stat -c%s "${{ env.FILE_PATH }}")
           echo "FILE_SIZE=$FILE_SIZE" >> "$GITHUB_ENV"
-        working-directory: /mnt/workspace
+        working-directory: /mnt/workspace/samfirm
 
       - name: Split large file
         if: ${{ env.FILE_SIZE >= 2147483648 }}
         run: |
           split -b 1G "${{ env.FILE_PATH }}" "${{ env.FILE_PATH }}_part_"
           rm "${{ env.FILE_PATH }}"
-        working-directory: /mnt/workspace
+        working-directory: /mnt/workspace/samfirm
 
       - name: Get latest firmware version
         run: |
           LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml" | grep -oP "<latest[^>]*>\K[^<]+")
           echo "LATEST_VERSION=$LATEST_VERSION" >> "$GITHUB_ENV"
-        working-directory: /mnt/workspace
+        working-directory: /mnt/workspace/samfirm
 
       - name: Check if tag exists
         run: |
@@ -65,12 +66,12 @@ jobs:
           else
             echo "TAG_EXISTS=false" >> "$GITHUB_ENV"
           fi
-        working-directory: /mnt/workspace
+        working-directory: /mnt/workspace/samfirm
 
       - name: GH Release
         if: ${{ env.TAG_EXISTS == 'false' }}
-        uses: softprops/action-gh-release@v2.2.1
+        uses: softprops/action-gh-release@v2
         with:
-          files: /mnt/workspace/SM-A236M_ARO/*
+          files: /mnt/workspace/samfirm/SM-A236M_ARO/*
           name: ${{ env.LATEST_VERSION }}
           tag_name: ${{ env.LATEST_VERSION }}
