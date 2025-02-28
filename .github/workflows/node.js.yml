@@ -28,12 +28,12 @@ jobs:
       - name: Check file path
         run: |
           file_path=$(ls SM-A236M_ARO/AP*)
-          echo file_path=$file_path >> $GITHUB_ENV
+          echo "file_path=$file_path" >> $GITHUB_ENV
 
       - name: Check file size
         run: |
           file_size=$(stat -c%s "${{ env.file_path }}")
-          echo file_size=$file_size >> $GITHUB_ENV
+          echo "file_size=$file_size" >> $GITHUB_ENV
 
       - name: Split large file
         if: ${{ env.file_size >= 2147483648 }}
@@ -44,14 +44,14 @@ jobs:
       - name: Get latest firmware version
         run: |
           latest_version=$(curl -s http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml | grep -oP '<latest[^>]*>\K[^<]+')
-          echo latest_version=$latest_version >> $GITHUB_ENV
+          echo "latest_version=$latest_version" >> $GITHUB_ENV
 
       - name: Check if tag exists
         run: |
           if git ls-remote --tags "https://github.com/${{ github.repository }}.git" "${{ env.latest_version }}" | grep -q "${{ env.latest_version }}"; then
-            echo tag_exists=true >> $GITHUB_ENV
+            echo "tag_exists=true" >> $GITHUB_ENV
           else
-            echo tag_exists=false >> $GITHUB_ENV
+            echo "tag_exists=false" >> $GITHUB_ENV
           fi
 
       - name: GH Release
