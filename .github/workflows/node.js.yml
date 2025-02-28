@@ -33,7 +33,7 @@ jobs:
 
       - name: Check file size
         run: |
-          FILE_SIZE=$(stat -c%s "${{ env.FILE_PATH }}")
+          FILE_SIZE=$(stat -c%s "$FILE_PATH")
           echo "FILE_SIZE=$FILE_SIZE" >> "$GITHUB_ENV"
 
       - name: Split large file
