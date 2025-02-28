@@ -25,12 +25,12 @@ jobs:
       - name: Run samfirm
         run: node index.mjs -m SM-A236M -r ARO -i R5CW312KLVM
 
-      - name: Check file path
+      - name: Get file path
         run: |
           FILE_PATH=$(ls SM-A236M_ARO/AP*)
           echo "FILE_PATH=$FILE_PATH" >> "$GITHUB_ENV"
 
-      - name: Check file size
+      - name: Get file size
         run: |
           FILE_SIZE=$(stat -c%s "${{ env.FILE_PATH }}")
           echo "FILE_SIZE=$FILE_SIZE" >> "$GITHUB_ENV"
