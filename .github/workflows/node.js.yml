@@ -3,7 +3,7 @@ name: Download and Release
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: "0 */6 * * *"
 
 jobs:
   release:
@@ -12,12 +12,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
-          repository: 'LunarStorm97/samfirm'
+          repository: "LunarStorm97/samfirm"
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
         with:
-          node-version: '22.x'
+          node-version: "22.x"
 
       - name: Install dependencies
         run: npm install
@@ -32,14 +32,14 @@ jobs:
 
       - name: Check file size
         run: |
-          file_size=$(stat -c%s ${{ env.file_path }})
+          file_size=$(stat -c%s "${{ env.file_path }}")
           echo file_size=$file_size >> $GITHUB_ENV
 
       - name: Split large file
         if: ${{ env.file_size >= 2147483648 }}
         run: |
-          split -b 1G ${{ env.file_path }} ${{ env.file_path }}_part_
-          rm ${{ env.file_path }}
+          split -b 1G "${{ env.file_path }}" "${{ env.file_path }}_part_"
+          rm "${{ env.file_path }}"
 
       - name: Get latest firmware version
         run: |
