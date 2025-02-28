@@ -33,7 +33,7 @@ jobs:
 
       - name: Check file path
         run: |
-          FILE_PATH=$(ls "${{ env.MODEL }}_${{ env.REGION }}/AP*")
+          FILE_PATH=$(ls "${{ env.MODEL }}_${{ env.REGION }}"/AP*)
           echo "FILE_PATH=$FILE_PATH" >> "$GITHUB_ENV"
 
       - name: Check file size
