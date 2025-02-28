@@ -29,32 +29,32 @@ jobs:
         run: npm install
 
       - name: Run samfirm
-        run: node index.mjs -m "$MODEL" -r "${{ env.REGION }}" -i "${{ env.IMEI }}"
+        run: node index.mjs -m "$MODEL" -r "$REGION" -i "$IMEI"
 
       - name: Check file path
         run: |
-          FILE_PATH=$(ls "${{ env.MODEL }}_${{ env.REGION }}"/AP*)
+          FILE_PATH=$(ls "$MODEL_$REGION"/AP*)
           echo "FILE_PATH=$FILE_PATH" >> "$GITHUB_ENV"
 
       - name: Check file size
         run: |
-          FILE_SIZE=$(stat -c%s "${{ env.FILE_PATH }}")
+          FILE_SIZE=$(stat -c%s "$FILE_PATH")
           echo "FILE_SIZE=$FILE_SIZE" >> "$GITHUB_ENV"
 
       - name: Split large file
         if: ${{ env.FILE_SIZE >= 2147483648 }}
         run: |
-          split -b 1G "${{ env.FILE_PATH }}" "${{ env.FILE_PATH }}_part_"
-          rm "${{ env.FILE_PATH }}"
+          split -b 1G "$FILE_PATH" "$FILE_PATH_part_"
+          rm "$FILE_PATH"
 
       - name: Get latest firmware version
         run: |
-          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/${{ env.REGION }}/${{ env.MODEL }}/version.xml" | grep -oP "<latest[^>]*>\K[^<]+")
+          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/$REGION/$MODEL/version.xml" | grep -oP "<latest[^>]*>\K[^<]+")
           echo "LATEST_VERSION=$LATEST_VERSION" >> "$GITHUB_ENV"
 
       - name: Check if tag exists
         run: |
-          if git ls-remote --tags "https://github.com/${{ github.repository }}.git" "${{ env.LATEST_VERSION }}" | grep -q "${{ env.LATEST_VERSION }}"; then
+          if git ls-remote --tags "https://github.com/${{ github.repository }}.git" "$LATEST_VERSION" | grep -q "$LATEST_VERSION"; then
             echo "TAG_EXISTS=true" >> "$GITHUB_ENV"
           else
             echo "TAG_EXISTS=false" >> "$GITHUB_ENV"
