@@ -27,7 +27,7 @@ jobs:
 
       - name: Check file path
         run: |
-          file_path=$(ls SM-A236M_ARO/AP*)
+          file_path=$(ls "SM-A236M_ARO/AP*")
           echo "file_path=$file_path" >> $GITHUB_ENV
 
       - name: Check file size
