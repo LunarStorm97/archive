@@ -55,7 +55,7 @@ jobs:
           fi
 
       - name: GH Release
-        if: ${{ env.tag_exists == false }}
+        if: ${{ env.tag_exists == 'false' }}
         uses: softprops/action-gh-release@v2.2.1
         with:
           files: SM-A236M_ARO/*
