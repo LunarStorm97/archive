@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: "0 */6 * * *"
 
+env:
+  MODEL: SM-A236M
+  REGION: ARO
+  IMEI: R5CW312KLVM
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -24,11 +29,11 @@ jobs:
         run: npm install
 
       - name: Run samfirm
-        run: node index.mjs -m SM-A236M -r ARO -i R5CW312KLVM
+        run: node index.mjs -m "${{ env.MODEL }}" -r "${{ env.REGION }}" -i "${{ env.IMEI }}"
 
       - name: Check file path
         run: |
-          FILE_PATH=$(ls SM-A236M_ARO/AP*)
+          FILE_PATH=$(ls ${{ env.MODEL }}_${{ env.REGION }}/AP*)
           echo "FILE_PATH=$FILE_PATH" >> "$GITHUB_ENV"
 
       - name: Check file size
@@ -44,7 +49,7 @@ jobs:
 
       - name: Get latest firmware version
         run: |
-          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/ARO/SM-A236M/version.xml" | grep -oP "<latest[^>]*>\K[^<]+")
+          LATEST_VERSION=$(curl -s "http://fota-cloud-dn.ospserver.net/firmware/${{ env.REGION }}/${{ env.MODEL }}/version.xml" | grep -oP "<latest[^>]*>\K[^<]+")
           echo "LATEST_VERSION=$LATEST_VERSION" >> "$GITHUB_ENV"
 
       - name: Check if tag exists
@@ -59,6 +64,6 @@ jobs:
         if: ${{ env.TAG_EXISTS == 'false' }}
         uses: softprops/action-gh-release@v2.2.1
         with:
-          files: SM-A236M_ARO/*
+          files: ${{ env.MODEL }}_${{ env.REGION }}/*
           name: ${{ env.LATEST_VERSION }}
           tag_name: ${{ env.LATEST_VERSION }}
