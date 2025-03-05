@@ -48,4 +48,4 @@ jobs:
         with:
           files: /mnt/workspace/*
           name: ${{ env.FILE_NAME }}
-          tag_name: ${{ env.FILE_NAME }}
+          tag_name: ${{ github.run_id }}
