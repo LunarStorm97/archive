@@ -19,11 +19,3 @@ branches:
 cache:
   directories:
     - node_modules
-
-# Notificaciones (puedes quitar esta sección si no la necesitas)
-notifications:
-  email:
-    recipients:
-      - tuemail@ejemplo.com
-    on_success: change
-    on_failure: always
