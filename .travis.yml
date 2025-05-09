@@ -1,0 +1,29 @@
+language: node_js
+node_js:
+  - "20"
+
+# Instalar dependencias
+install:
+  - npm install
+
+# Ejecutar pruebas
+script:
+  - npm test
+
+# Opcional: especificar ramas
+branches:
+  only:
+    - main
+
+# Opcional: cache para acelerar builds
+cache:
+  directories:
+    - node_modules
+
+# Notificaciones (puedes quitar esta sección si no la necesitas)
+notifications:
+  email:
+    recipients:
+      - tuemail@ejemplo.com
+    on_success: change
+    on_failure: always
