@@ -2,20 +2,8 @@ language: node_js
 node_js:
   - "20"
 
-# dependencias
 install:
   - npm install
 
-# Ejecutar pruebas
 script:
   - npm test
-
-# Opcional: especificar ramas
-branches:
-  only:
-    - main
-
-# Opcional: cache para acelerar builds
-cache:
-  directories:
-    - node_modules
